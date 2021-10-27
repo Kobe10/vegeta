@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.xbk.spring.web.support.SelfRedisAutoConfiguration,\
+  com.xbk.spring.web.support.SelfRedisLockConfiguration

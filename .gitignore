@@ -1,0 +1,52 @@
+# dataSource ignore
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar
+*.tar.gz
+
+# plugin ignore
+rebel.xml
+
+# maven ignore
+target/
+/target/
+
+# myeclipse ignore
+.mymetadata
+
+# eclipse ignore
+.settings/
+.tomcatplugin
+.project
+.classpath
+
+# idea ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+*.gradle
+*.MF
+
+# temp ignore
+classes/
+
+work/
+
+*.doc
+#*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+*.bak
+build
+
+### VS Code ###
+.vscode/
+
+/rebel.xml
+/base-start/src/main/resources/application-dev.yml

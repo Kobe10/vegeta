@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO" monitorInterval="60">
+    <!--https://www.cnblogs.com/keeya/p/10101547.htm-->
+    <Properties>
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="LOG_PATTERN">[%d{yyyy-MM-dd HH:mm:ss.SSS}] %clr{[%X{TRACEID}]}{red} %clr{${LOG_LEVEL_PATTERN}} %clr{[%15.35t]}{blue} %clr{%C.%M(%L)}{cyan} --> %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+    </Properties>
+
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="${sys:LOG_PATTERN}"/>
+        </Console>
+    </appenders>
+
+    <Loggers>
+        <!--<Root level="DEBUG">-->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="io.swagger.models" level="ERROR" additivity="false" includeLocation="true">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.springframework.amqp" level="INFO" additivity="false" includeLocation="true">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!--记录druid-sql的记录-->
+        <logger name="druid.sql.Statement" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+    </Loggers>
+</configuration>

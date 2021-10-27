@@ -1,0 +1,8 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.xbk.spring.web.taskexecutor.ThreadPoolTaskExecutorAutoConfig,\
+  com.xbk.spring.web.log.LogFilterAutoConfig,\
+  com.xbk.spring.web.json.JacksonAutoConfiguration,\
+  com.xbk.spring.web.socket.UndertowSocketAutoConfig,\
+  com.xbk.spring.web.web.ExceptionAdviceAutoConfiguration,\
+  com.xbk.spring.web.web.ResponseAdviceAutoConfiguration
+

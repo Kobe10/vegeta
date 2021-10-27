@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xbk.demo.web.mapper.DemoMapper">
+    <resultMap id="BaseResultMap" type="com.xbk.demo.web.data.entity.Demo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="demo_name" jdbcType="VARCHAR" property="name"/>
+        <result column="demo_num" jdbcType="VARCHAR" property="demoNum"/>
+        <result column="is_del" jdbcType="VARCHAR" property="isDel"/>
+        <result column="is_del" jdbcType="INTEGER" property="isDel"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+    </resultMap>
+
+    <!-- 根据  num 查询 -->
+    <select id="selectByDemoNum" parameterType="integer" resultMap="BaseResultMap">
+        select *
+        from o_demo
+        where is_del = 1
+        AND demo_num = #{demoNum,jdbcType=INTEGER}
+    </select>
+</mapper>

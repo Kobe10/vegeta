@@ -4,7 +4,7 @@
 buildscript {
     // 指定spring版本
     ext {
-        springBootVersion = '2.1.6.RELEASE'
+        springBootVersion = '2.3.5.RELEASE'
         dependencyVersion = '1.0.9.RELEASE'
     }
     // 脚本依赖仓库

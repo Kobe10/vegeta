@@ -1,0 +1,12 @@
+
+dependencies {
+    compile project(":xbk-common-start:xbk-common-start-web")
+    compile 'org.springframework.boot:spring-boot-starter-test'
+    compile project(":xbk-common-demo::xbk-common-demo-feign-api")
+    compile project(":xbk-common-core:xbk-common-core-util")
+    compile project(":xbk-common-start:xbk-common-start-dataSource")
+    compile project(":xbk-common-start:xbk-common-start-mybatis")
+    compile project(":xbk-common-start:xbk-common-start-httpclient")
+
+    compile 'org.springframework.boot:spring-boot-starter-web'
+}

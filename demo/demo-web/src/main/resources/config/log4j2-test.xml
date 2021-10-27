@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO" monitorInterval="60">
+    <contextName>crm-service-rentoqnew</contextName>
+    <Properties>
+        <!-- 文件存储位置 -->
+        <Property name="log_dir">/app/logs</Property>
+        <Property name="server_name">demo</Property>
+        <Property name="async_base_path">com.ziroom.crm</Property>
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <!-- 配置模板信息 -->
+        <!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度, %msg：日志消息，%n是换行符-->
+        <Property name="LOG_PATTERN">[%d{yyyy-MM-dd HH:mm:ss.SSS}] %clr{[%X{TRACEID}]}{red} %clr{${LOG_LEVEL_PATTERN}} %clr{[%15.35t]}{blue} %clr{%C.%M(%L)}{cyan} --> %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+    </Properties>
+    <appenders>
+        <!-- 配置基础信息日志 -->
+        <RollingFile name="INF" fileName="${log_dir}/${server_name}_inf.log"
+                     filePattern="${log_dir}/pack/${server_name}_%d{yyyyMMdd}_inf.log.gz"
+                     immediateFlush="true">
+            <PatternLayout charset="UTF-8" pattern="${sys:LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!-- 默认保存30天的日志信息 -->
+            <DefaultRolloverStrategy max="30">
+                <delete basePath="${log_dir}">
+                    <IfFileName glob="/pack/${server_name}_*_inf.log.gz"/>
+                    <IfLastModified age="30d"/>
+                </delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- 配置错误日志信息 -->
+        <RollingFile name="ERR" fileName="${log_dir}/${server_name}_err.log"
+                     filePattern="${log_dir}/pack/${server_name}_%d{yyyyMMdd}_err.log.gz"
+                     immediateFlush="true">
+            <PatternLayout charset="UTF-8" pattern="${sys:LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <DefaultRolloverStrategy max="30">
+                <delete basePath="${log_dir}">
+                    <IfFileName glob="/pack/${server_name}_*_err.log.gz"/>
+                    <IfLastModified age="30d"/>
+                </delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </appenders>
+
+    <Loggers>
+
+        <AsyncLogger name="${async_base_path}" level="INFO" additivity="false">
+            <AppenderRef ref="INF"/>
+            <AppenderRef ref="ERR"/>
+        </AsyncLogger>
+
+        <Root level="INFO">
+            <AppenderRef ref="INF"/>
+            <AppenderRef ref="ERR"/>
+        </Root>
+
+        <Logger name="io.swagger.models" level="ERROR" additivity="false" includeLocation="true">
+            <AppenderRef ref="INF"/>
+        </Logger>
+
+        <!--记录druid-sql的记录-->
+        <logger name="druid.sql.Statement" level="debug" additivity="false">
+            <appender-ref ref="INF"/>
+        </logger>
+    </Loggers>
+</configuration>

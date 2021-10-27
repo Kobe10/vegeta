@@ -1,0 +1,16 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /demo
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: xbk-demo
+
+logging:
+  config: "classpath:config/log4j2-${spring.profiles.active}.xml"
+
+
+debug: true

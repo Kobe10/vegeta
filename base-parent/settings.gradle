@@ -1,0 +1,26 @@
+rootProject.name = 'base-parent'
+include(':core')
+include(':core:core-util')
+include(':core:core-global')
+project(':core:core-util').projectDir = file('../core/core-util')
+project(':core:core-global').projectDir = file('../core/core-global')
+project(':core').projectDir = file('../core')
+
+include(':start:start-mybatis')
+include(':start:start-redis')
+include(':start:start-web')
+include(':start')
+project(':start:start-mybatis').projectDir = file('../start/start-mybatis')
+project(':start:start-redis').projectDir = file('../start/start-redis')
+project(':start:start-web').projectDir = file('../start/start-web')
+project(':start').projectDir = file('../start')
+
+
+//// web项目
+include(':demo')
+
+include(':demo:demo-web')
+//
+project(':demo:demo-web').projectDir = file('../demo/demo-web')
+project(':demo').projectDir = file('../demo')
+
