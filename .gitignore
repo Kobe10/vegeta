@@ -36,6 +36,8 @@ classes/
 
 work/
 
+*.DS_Store
+
 *.doc
 #*.log
 *.cache
