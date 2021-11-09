@@ -1,7 +1,5 @@
 package com.vegeta.global.exception;
 
-import com.vegeta.global.result.FailResponse;
-
 /**
  * <p></p>
  * <p> 异常抽象类

@@ -1,0 +1,9 @@
+dependencies {
+    compile project(":common:core-common")
+
+    implementation("org.slf4j:slf4j-api")
+    implementation("org.apache.commons:commons-lang3")
+    implementation("com.alibaba:fastjson")
+    implementation("com.google.guava:guava")
+    implementation("commons-codec:commons-codec")
+}

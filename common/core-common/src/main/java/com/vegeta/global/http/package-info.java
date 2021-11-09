@@ -1,6 +1,6 @@
 /**
  * <p></p>
- * <p> 定义的全局 返回结果集
+ * <p> 定义的全局  http 请求返回结果
  * <PRE>
  * <BR>    修改记录
  * <BR>-----------------------------------------------
@@ -12,4 +12,4 @@
  * @version 1.0
  * @since 1.0
  */
-package com.vegeta.global.result;
+package com.vegeta.global.http;

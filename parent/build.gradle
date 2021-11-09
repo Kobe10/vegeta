@@ -80,7 +80,7 @@ subprojects {
             mavenBom 'commons-beanutils:commons-beanutils:1.9.3'
             mavenBom 'org.apache.commons:commons-collections4:4.3'
             mavenBom 'org.apache.commons:commons-math3:3.6.1'
-            mavenBom 'com.squareup.okhttp3:okhttp:4.0.1'
+            mavenBom 'com.squareup.okhttp3:okhttp:3.14.9'
             mavenBom 'com.google.guava:guava:20.0'
             mavenBom 'com.github.ben-manes.caffeine:caffeine:2.6.2'
         }
@@ -90,8 +90,10 @@ subprojects {
         // 通用依赖
         implementation 'com.google.guava:guava:20.0'
         implementation 'com.alibaba:fastjson:1.2.31'
-        implementation 'org.projectlombok:lombok'
 
+        implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+        
         annotationProcessor 'org.projectlombok:lombok'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
