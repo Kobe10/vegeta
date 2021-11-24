@@ -8,20 +8,21 @@ import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
  * HttpClient util.
  *
- * @author chen.ma
- * @date 2021/6/10 13:30
+ * @Author fuzhiqiang
+ * @Date 2021/11/24
  */
 @Data
 @Slf4j
 public class HttpClientUtil {
-    @Autowired
-    private OkHttpClient okHttpClient;
+    @Resource
+    private OkHttpClient okHttoClient;
 
     private MediaType jsonMediaType = MediaType.parse("application/json; charset=utf-8");
 
@@ -36,10 +37,8 @@ public class HttpClientUtil {
     @SneakyThrows
     public String get(String url) {
         try {
-
             return new String(doGet(url), "utf-8");
         } catch (Exception e) {
-
             log.error("httpGet 调用失败. {}", url, e);
             throw e;
         }
@@ -95,7 +94,6 @@ public class HttpClientUtil {
         try {
             return doPost(url, body);
         } catch (Exception e) {
-
             log.error("httpPost 调用失败. {}", url, e);
             throw e;
         }
@@ -155,22 +153,24 @@ public class HttpClientUtil {
                 .url(url)
                 .post(requestBody)
                 .build();
-        Response resp = okHttpClient.newCall(request).execute();
+        Response resp = okHttoClient.newCall(request).execute();
         if (resp.code() != HTTP_OK_CODE) {
             String msg = String.format("HttpPost 响应 code 异常. [code] %s [url] %s [body] %s", resp.code(), url, jsonBody);
             throw new RuntimeException(msg);
         }
+        assert resp.body() != null;
         return resp.body().string();
     }
 
     @SneakyThrows
     private byte[] doGet(String url) {
         Request request = new Request.Builder().get().url(url).build();
-        Response resp = okHttpClient.newCall(request).execute();
+        Response resp = okHttoClient.newCall(request).execute();
         if (resp.code() != HTTP_OK_CODE) {
             String msg = String.format("HttpGet 响应 code 异常. [code] %s [url] %s", resp.code(), url);
             throw new RuntimeException(msg);
         }
+        assert resp.body() != null;
         return resp.body().bytes();
     }
 
@@ -185,9 +185,7 @@ public class HttpClientUtil {
 
         Request request = builder.url(buildUrl).build();
 
-        Call call = okHttpClient.newCall(request);
-
-//        call.timeout().timeout(readTimeoutMs, TimeUnit.MILLISECONDS);
+        Call call = okHttoClient.newCall(request);
 
         Response resp = call.execute();
         if (resp.code() != HTTP_OK_CODE) {
@@ -196,6 +194,7 @@ public class HttpClientUtil {
             throw new RuntimeException(msg);
         }
 
+        assert resp.body() != null;
         return JSON.parseObject(resp.body().string(), clazz);
     }
 
@@ -209,9 +208,7 @@ public class HttpClientUtil {
                 .post(RequestBody.create(jsonMediaType, ""))
                 .build();
 
-        Call call = okHttpClient.newCall(request);
-
-//        call.timeout().timeout(readTimeoutMs, TimeUnit.MILLISECONDS);
+        Call call = okHttoClient.newCall(request);
 
         Response resp = call.execute();
         if (resp.code() != HTTP_OK_CODE) {
@@ -219,7 +216,7 @@ public class HttpClientUtil {
             log.error(msg);
             throw new RuntimeException(msg);
         }
+        assert resp.body() != null;
         return JSON.parseObject(resp.body().string(), clazz);
     }
-
 }

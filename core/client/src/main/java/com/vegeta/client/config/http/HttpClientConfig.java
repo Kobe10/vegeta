@@ -1,5 +1,8 @@
 package com.vegeta.client.config.http;
 
+import com.vegeta.client.config.bootstrap.BootstrapProperties;
+import com.vegeta.client.oapi.HttpAgent;
+import com.vegeta.client.oapi.ServerHttpAgent;
 import com.vegeta.global.util.HttpClientUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +19,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Http client config.
  *
- * @author chen.ma
+ * @author fuzq
  * @date 2021/6/10 13:28
  */
 public class HttpClientConfig {
-
     @Bean
-    public OkHttpClient okHttpClient() {
+    public OkHttpClient hippo4JOkHttpClient() {
         OkHttpClient.Builder build = new OkHttpClient.Builder();
         build.connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -32,13 +34,13 @@ public class HttpClientConfig {
     }
 
     @Bean
-    public HttpClientUtil httpClientUtil() {
+    public HttpClientUtil hippo4JHttpClientUtil() {
         return new HttpClientUtil();
     }
 
     @Bean
-    public HttpAgent httpAgent(BootstrapProperties properties, HttpClientUtil httpClientUtil) {
-        return new ServerHttpAgent(properties, httpClientUtil);
+    public HttpAgent httpAgent(BootstrapProperties properties, HttpClientUtil hippo4JHttpClientUtil) {
+        return new ServerHttpAgent(properties, hippo4JHttpClientUtil);
     }
 
     @SneakyThrows
@@ -64,5 +66,4 @@ public class HttpClientConfig {
         builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
     }
-
 }
