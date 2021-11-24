@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author chen.ma
  * @date 2021/8/6 21:02
  */
-public class CloudCommonIdUtil {
+public class CommonIdUtil {
 
     private static final String SEPARATOR = ":";
 

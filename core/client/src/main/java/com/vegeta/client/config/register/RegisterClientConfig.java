@@ -14,8 +14,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.net.InetAddress;
 
-import static com.vegeta.client.tool.CloudCommonIdUtil.getDefaultInstanceId;
-import static com.vegeta.client.tool.CloudCommonIdUtil.getIpApplicationName;
+import static com.vegeta.client.tool.CommonIdUtil.getDefaultInstanceId;
+import static com.vegeta.client.tool.CommonIdUtil.getIpApplicationName;
 import static com.vegeta.global.consts.Constants.*;
 
 /**
