@@ -10,17 +10,18 @@ import java.util.concurrent.Executor;
  */
 public interface Listener {
 
+
     /**
-     * Get executor.
+     * Get executor for execute this receive.
      *
-     * @return
+     * @return Executor
      */
     Executor getExecutor();
 
     /**
      * Receive config info.
      *
-     * @param configInfo
+     * @param configInfo config info
      */
-    void receiveConfigInfo(String configInfo);
+    void receiveConfigInfo(final String configInfo);
 }

@@ -25,7 +25,7 @@ public class PoolParameterInfo implements PoolParameter, Serializable {
     /**
      * itemId
      */
-    private String itemId;
+    private String appId;
 
     /**
      * tpId

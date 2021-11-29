@@ -18,7 +18,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Dynamic threadPool wrap.
+ * 动态线程池 包装器  (重写 ThreadPoolExecutor)
  *
  * @author chen.ma
  * @date 2021/7/8 21:47
@@ -69,10 +69,7 @@ public class DynamicThreadPoolExecutor extends ThreadPoolExecutor {
                                      @NonNull RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
 
-        if (corePoolSize < 0 ||
-                maximumPoolSize <= 0 ||
-                maximumPoolSize < corePoolSize ||
-                keepAliveTime < 0) {
+        if (maximumPoolSize < corePoolSize) {
             throw new IllegalArgumentException();
         }
 
@@ -140,9 +137,16 @@ public class DynamicThreadPoolExecutor extends ThreadPoolExecutor {
         return this.threadPoolId;
     }
 
+
+    /**
+     * 重写 threadPoolExecutor里面的worker
+     *
+     * @Author fuzhiqiang
+     * @Date 2021/11/29
+     */
     private final class Worker extends AbstractQueuedSynchronizer implements Runnable {
 
-        private static final long serialVersionUID = 6138294804551838833L;
+        private static final long serialVersionUID = -3641274646889502303L;
 
         final Thread thread;
         Runnable firstTask;
@@ -954,5 +958,4 @@ public class DynamicThreadPoolExecutor extends ThreadPoolExecutor {
             }
         }
     }
-
 }

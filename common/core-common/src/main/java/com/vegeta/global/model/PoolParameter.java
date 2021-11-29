@@ -20,7 +20,7 @@ public interface PoolParameter {
      *
      * @return
      */
-    String getItemId();
+    String getAppId();
 
     /**
      * tpId

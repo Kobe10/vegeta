@@ -16,7 +16,7 @@ public class ContentUtil {
     public static String getPoolContent(PoolParameter parameter) {
         PoolParameterInfo poolInfo = new PoolParameterInfo();
         poolInfo.setTenantId(parameter.getTenantId())
-                .setItemId(parameter.getItemId())
+                .setAppId(parameter.getAppId())
                 .setTpId(parameter.getTpId())
                 .setCoreSize(parameter.getCoreSize())
                 .setMaxSize(parameter.getMaxSize())
@@ -31,14 +31,11 @@ public class ContentUtil {
     }
 
     public static String getGroupKey(PoolParameter parameter) {
-        StringBuilder stringBuilder = new StringBuilder();
-        String resultStr = stringBuilder.append(parameter.getTpId())
-                .append(Constants.GROUP_KEY_DELIMITER)
-                .append(parameter.getItemId())
-                .append(Constants.GROUP_KEY_DELIMITER)
-                .append(parameter.getTenantId())
-                .toString();
-        return resultStr;
+        return parameter.getTpId() +
+                Constants.GROUP_KEY_DELIMITER +
+                parameter.getAppId() +
+                Constants.GROUP_KEY_DELIMITER +
+                parameter.getTenantId();
     }
 
     /**
@@ -58,8 +55,6 @@ public class ContentUtil {
                 stringBuilder.append(Constants.GROUP_KEY_DELIMITER);
             }
         }
-
         return stringBuilder.toString();
     }
-
 }
