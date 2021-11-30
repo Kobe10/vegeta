@@ -6,9 +6,14 @@ import cn.hippo4j.common.toolkit.GroupKey;
 import cn.hippo4j.common.web.base.Result;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vegeta.client.oapi.HttpAgent;
 import com.vegeta.global.consts.Constants;
+import com.vegeta.global.http.result.base.Result;
+import com.vegeta.global.model.PoolParameterInfo;
+import com.vegeta.global.util.ContentUtil;
+import com.vegeta.global.util.GroupKeyUtil;
 import com.vegeta.global.util.ThreadUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +23,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static cn.hippo4j.common.constant.Constants.*;
+import static com.vegeta.global.consts.Constants.CONFIG_CONTROLLER_PATH;
+import static com.vegeta.global.consts.Constants.LISTENER_PATH;
 
 /**
  * 客户端  Long polling.
@@ -62,26 +68,27 @@ public class ClientWorker implements Closeable {
 
     @SuppressWarnings("all")
     public ClientWorker(HttpAgent httpAgent, String identification) {
+        // 1、初始化agent
         this.agent = httpAgent;
         this.identification = identification;
         this.timeout = Constants.CONFIG_LONG_POLL_TIMEOUT;
-        //
         this.executor = Executors.newScheduledThreadPool(1, r -> {
             Thread t = new Thread(r);
             t.setName("client.worker.executor");
             t.setDaemon(true);
             return t;
         });
-        // 轮询任务
+        // 2、轮询任务
         this.executorService = Executors.newScheduledThreadPool(ThreadUtils.getSuitableThreadCount(1), r -> {
             Thread t = new Thread(r);
             t.setName("client.long.polling.executor");
             t.setDaemon(true);
             return t;
         });
-        // 登录校验权限
+        // todo 登录校验权限 (服务端登录校验)
+        // login
 
-        // 延迟任务  检验配置更新
+        // 延迟任务  校验配置更新
         this.executor.scheduleWithFixedDelay(() -> {
             try {
                 checkConfigInfo();
@@ -94,8 +101,9 @@ public class ClientWorker implements Closeable {
     public void checkConfigInfo() {
         int listenerSize = cacheMap.get().size();
         double perTaskConfigSize = 3000D;
+        // 监听组的任务数量
         int longingTaskCount = (int) Math.ceil(listenerSize / perTaskConfigSize);
-
+        // 当组的数量大于当前内存的任务数量  轮询补全长轮询任务数量
         if (longingTaskCount > currentLongingTaskCount) {
             for (int i = (int) currentLongingTaskCount; i < longingTaskCount; i++) {
                 executorService.execute(new LongPollingRunnable());
@@ -142,32 +150,34 @@ public class ClientWorker implements Closeable {
         @Override
         @SneakyThrows
         public void run() {
+            // 校验服务端状态
             checkStatus();
-
-            List<CacheData> cacheDataList = new ArrayList();
-            List<String> inInitializingCacheList = new ArrayList();
-            cacheMap.forEach((key, val) -> cacheDataList.add(val));
+            // 获取客户端所有分组 线程池缓存
+            List<CacheData> cacheDataList = Lists.newArrayList();
+            List<String> inInitializingCacheList = Lists.newArrayList();
+            cacheMap.get().forEach((key, val) -> cacheDataList.add(val));
 
             List<String> changedTpIds = checkUpdateDataIds(cacheDataList, inInitializingCacheList);
             for (String each : changedTpIds) {
-                String[] keys = StrUtil.split(each, GROUP_KEY_DELIMITER);
-                String tpId = keys[0];
-                String itemId = keys[1];
-                String namespace = keys[2];
+                // 分解 groupKey
+                List<String> keys = StrUtil.split(each, Constants.GROUP_KEY_DELIMITER);
+                String tpId = keys.get(0);
+                String appId = keys.get(1);
+                String namespace = keys.get(2);
 
+                // 获取线程池配置信息
                 try {
-                    String content = getServerConfig(namespace, itemId, tpId, 3000L);
-                    CacheData cacheData = cacheMap.get(tpId);
+                    String content = getServerConfig(namespace, appId, tpId, 3000L);
+                    CacheData cacheData = cacheMap.get().get(tpId);
                     String poolContent = ContentUtil.getPoolContent(JSON.parseObject(content, PoolParameterInfo.class));
                     cacheData.setContent(poolContent);
-                } catch (Exception ex) {
-                    // ignore
+                } catch (Exception ignored) {
                 }
             }
 
             for (CacheData cacheData : cacheDataList) {
                 if (!cacheData.isInitializing() || inInitializingCacheList
-                        .contains(GroupKey.getKeyTenant(cacheData.tpId, cacheData.itemId, cacheData.tenantId))) {
+                        .contains(GroupKeyUtil.getKeyTenant(cacheData.tpId, cacheData.appId, cacheData.tenantId))) {
                     cacheData.checkListenerMd5();
                     cacheData.setInitializing(false);
                 }
@@ -178,36 +188,45 @@ public class ClientWorker implements Closeable {
         }
     }
 
+    /**
+     * 校验线程池配置信息
+     *
+     * @param cacheDataList           配置缓存
+     * @param inInitializingCacheList 初始化list
+     * @return java.util.List<java.lang.String>
+     * @Author fuzhiqiang
+     * @Date 2021/11/30
+     */
     private List<String> checkUpdateDataIds(List<CacheData> cacheDataList, List<String> inInitializingCacheList) {
         StringBuilder sb = new StringBuilder();
         for (CacheData cacheData : cacheDataList) {
-            sb.append(cacheData.tpId).append(WORD_SEPARATOR);
-            sb.append(cacheData.itemId).append(WORD_SEPARATOR);
-            sb.append(cacheData.tenantId).append(WORD_SEPARATOR);
-            sb.append(identification).append(WORD_SEPARATOR);
-            sb.append(cacheData.getMd5()).append(LINE_SEPARATOR);
+            sb.append(cacheData.tpId).append(Constants.WORD_SEPARATOR);
+            sb.append(cacheData.appId).append(Constants.WORD_SEPARATOR);
+            sb.append(cacheData.tenantId).append(Constants.WORD_SEPARATOR);
+            sb.append(identification).append(Constants.WORD_SEPARATOR);
+            sb.append(cacheData.getMd5()).append(Constants.LINE_SEPARATOR);
 
             if (cacheData.isInitializing()) {
-                inInitializingCacheList.add(GroupKey.getKeyTenant(cacheData.tpId, cacheData.itemId, cacheData.tenantId));
+                inInitializingCacheList.add(GroupKeyUtil.getKeyTenant(cacheData.tpId, cacheData.appId, cacheData.tenantId));
             }
         }
-
         boolean isInitializingCacheList = !inInitializingCacheList.isEmpty();
         return checkUpdateTpIds(sb.toString(), isInitializingCacheList);
     }
 
     public List<String> checkUpdateTpIds(String probeUpdateString, boolean isInitializingCacheList) {
         Map<String, String> params = new HashMap(2);
-        params.put(PROBE_MODIFY_REQUEST, probeUpdateString);
+        params.put(Constants.PROBE_MODIFY_REQUEST, probeUpdateString);
         Map<String, String> headers = new HashMap(2);
-        headers.put(LONG_PULLING_TIMEOUT, "" + timeout);
+        headers.put(Constants.LONG_PULLING_TIMEOUT, "" + timeout);
 
         // 确认客户端身份, 修改线程池配置时可单独修改
-        headers.put(LONG_PULLING_CLIENT_IDENTIFICATION, identification);
+        headers.put(Constants.LONG_PULLING_CLIENT_IDENTIFICATION, identification);
 
         // told server do not hang me up if new initializing cacheData added in
+        // 数据初始化, 增加参数 (让服务端保持连接)
         if (isInitializingCacheList) {
-            headers.put(LONG_PULLING_TIMEOUT_NO_HANGUP, "true");
+            headers.put(Constants.LONG_PULLING_TIMEOUT_NO_HANGUP, "true");
         }
 
         if (StringUtils.isEmpty(probeUpdateString)) {
@@ -232,10 +251,21 @@ public class ClientWorker implements Closeable {
         return Collections.emptyList();
     }
 
+    /**
+     * 获取服务端配置信息  path: /v1/cs/configs
+     *
+     * @param namespace   空间
+     * @param appId       应用id
+     * @param tpId        部门id
+     * @param readTimeout 超时时间
+     * @return java.lang.String
+     * @Author fuzhiqiang
+     * @Date 2021/11/30
+     */
     public String getServerConfig(String namespace, String appId, String tpId, long readTimeout) {
-        Map<String, String> params = new HashMap(3);
+        Map<String, String> params = Maps.newConcurrentMap();
         params.put("namespace", namespace);
-        params.put("itemId", appId);
+        params.put("appId", appId);
         params.put("tpId", tpId);
 
         Result result = agent.httpGetByConfig(CONFIG_CONTROLLER_PATH, null, params, readTimeout);
@@ -244,8 +274,8 @@ public class ClientWorker implements Closeable {
         }
 
         log.error("[Sub server] namespace :: {}, appId :: {}, tpId :: {}, result code :: {}",
-                namespace, itemId, tpId, result.getCode());
-        return NULL;
+                namespace, appId, tpId, result.getCode());
+        return Constants.NULL;
     }
 
     public List<String> parseUpdateDataIdResponse(String response) {
