@@ -1,15 +1,5 @@
 package com.vegeta.client.config;
 
-import cn.hippo4j.common.config.ApplicationContextHolder;
-import cn.hippo4j.starter.controller.PoolRunStateController;
-import cn.hippo4j.starter.core.ConfigService;
-import cn.hippo4j.starter.core.DynamicThreadPoolPostProcessor;
-import cn.hippo4j.starter.core.ThreadPoolConfigService;
-import cn.hippo4j.starter.core.ThreadPoolOperation;
-import cn.hippo4j.starter.handler.DynamicThreadPoolBannerHandler;
-import cn.hippo4j.starter.remote.HttpAgent;
-import cn.hippo4j.starter.toolkit.inet.InetUtils;
-import cn.hutool.core.util.StrUtil;
 import com.vegeta.client.config.alarm.MessageAlarmConfig;
 import com.vegeta.client.config.bootstrap.BootstrapProperties;
 import com.vegeta.client.config.http.CorsConfig;

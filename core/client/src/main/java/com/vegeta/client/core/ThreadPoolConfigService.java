@@ -1,6 +1,6 @@
 package com.vegeta.client.core;
 
-import cn.hippo4j.starter.remote.HttpAgent;
+import com.vegeta.client.oapi.HttpAgent;
 
 import java.util.Arrays;
 

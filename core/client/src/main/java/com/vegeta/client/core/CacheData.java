@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.RejectedExecutionException;
 
 
 @Slf4j
@@ -30,6 +31,8 @@ public class CacheData {
      * whether use local config.
      */
     private volatile boolean isUseLocalConfig = false;
+
+    private int taskId;
 
     /**
      * last modify time.
@@ -58,6 +61,14 @@ public class CacheData {
 
     public void setSyncWithServer(boolean syncWithServer) {
         isSyncWithServer = syncWithServer;
+    }
+
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
     }
 
     // 管理监听器包装类
@@ -95,13 +106,33 @@ public class CacheData {
     // 通知配置变更监听器  (线程安全)
     private void safeNotifyListener(String content, String md5, ManagerListenerWrapper wrap) {
         Listener listener = wrap.getListener();
-
+        // 校验当前任务是否正在执行
+        if (wrap.inNotifying) {
+            log.info("[任务正在执行 。。。。。]");
+            return;
+        }
+        // 执行通知任务   触发监听器的回调机制
         Runnable runnable = () -> {
-            wrap.setLastCallMd5(md5);
-            listener.receiveConfigInfo(content);
+            try {
+                wrap.setLastCallMd5(md5);
+                listener.receiveConfigInfo(content);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                wrap.inNotifying = false;
+            }
         };
+        final long startNotify = System.currentTimeMillis();
+        try {
+            if (null != listener.getExecutor()) {
+                listener.getExecutor().execute(runnable);
+            }
+        } catch (Throwable t) {
+            log.error("【notify-listener】 no available internal notifier,will sync notifier! ");
+        }
+        final long finishNotify = System.currentTimeMillis();
+        log.info("【notify-listener】 time cost = {} ms", (finishNotify - startNotify));
 
-        listener.getExecutor().execute(runnable);
     }
 
     public void setContent(String content) {
@@ -130,6 +161,8 @@ public class CacheData {
     @Setter
     @Getter
     private static class ManagerListenerWrapper {
+
+        boolean inNotifying = false;
 
         String lastCallMd5 = CacheData.getMd5String(null);
 

@@ -1,9 +1,5 @@
 package com.vegeta.client.core;
 
-import cn.hippo4j.common.model.PoolParameterInfo;
-import cn.hippo4j.common.toolkit.ContentUtil;
-import cn.hippo4j.common.toolkit.GroupKey;
-import cn.hippo4j.common.web.base.Result;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -17,7 +13,7 @@ import com.vegeta.global.util.GroupKeyUtil;
 import com.vegeta.global.util.ThreadUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -29,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static cn.hippo4j.common.constant.Constants.*;
 import static com.vegeta.global.consts.Constants.CONFIG_CONTROLLER_PATH;
 import static com.vegeta.global.consts.Constants.LISTENER_PATH;
 
@@ -156,7 +151,7 @@ public class ClientWorker implements Closeable {
             List<CacheData> cacheDataList = Lists.newArrayList();
             List<String> inInitializingCacheList = Lists.newArrayList();
             cacheMap.get().forEach((key, val) -> cacheDataList.add(val));
-
+            // 获取配置信息变更的线程池的id
             List<String> changedTpIds = checkUpdateDataIds(cacheDataList, inInitializingCacheList);
             for (String each : changedTpIds) {
                 // 分解 groupKey
@@ -165,8 +160,8 @@ public class ClientWorker implements Closeable {
                 String appId = keys.get(1);
                 String namespace = keys.get(2);
 
-                // 获取线程池配置信息
                 try {
+                    // 获取线程池配置信息，存入缓存的上下文中
                     String content = getServerConfig(namespace, appId, tpId, 3000L);
                     CacheData cacheData = cacheMap.get().get(tpId);
                     String poolContent = ContentUtil.getPoolContent(JSON.parseObject(content, PoolParameterInfo.class));
@@ -175,9 +170,11 @@ public class ClientWorker implements Closeable {
                 }
             }
 
+            // 遍历当前所有的线程池的缓存信息  (初始化过的和正在初始化的)
             for (CacheData cacheData : cacheDataList) {
                 if (!cacheData.isInitializing() || inInitializingCacheList
                         .contains(GroupKeyUtil.getKeyTenant(cacheData.tpId, cacheData.appId, cacheData.tenantId))) {
+                    // 校验缓存中的配置信息的md5和上一次请求是否一致，  如果不一致   那么通知监听器，线程池配置发生变更
                     cacheData.checkListenerMd5();
                     cacheData.setInitializing(false);
                 }
@@ -278,8 +275,16 @@ public class ClientWorker implements Closeable {
         return Constants.NULL;
     }
 
+    /**
+     * 解析服务端返回数据
+     *
+     * @param response 返回结果
+     * @return java.util.List<java.lang.String>
+     * @Author fuzhiqiang
+     * @Date 2021/12/1
+     */
     public List<String> parseUpdateDataIdResponse(String response) {
-        if (StringUtils.isEmpty(response)) {
+        if (StringUtils.isNoneBlank(response)) {
             return Collections.emptyList();
         }
 
@@ -289,22 +294,25 @@ public class ClientWorker implements Closeable {
             log.error("[Polling resp] decode modifiedDataIdsString error", e);
         }
 
-
-        List<String> updateList = new LinkedList();
-        for (String dataIdAndGroup : response.split(LINE_SEPARATOR)) {
+        List<String> updateList = Lists.newLinkedList();
+        // 返回结果用字符 '1' 隔开  (包含所有配置信息)
+        for (String dataIdAndGroup : response.split(Constants.LINE_SEPARATOR)) {
             if (!StringUtils.isEmpty(dataIdAndGroup)) {
-                String[] keyArr = dataIdAndGroup.split(WORD_SEPARATOR);
+                // 每个线程池的详细配置用  字符  '2' 隔开
+                String[] keyArr = dataIdAndGroup.split(Constants.WORD_SEPARATOR);
                 String dataId = keyArr[0];
                 String group = keyArr[1];
                 if (keyArr.length == 2) {
-                    updateList.add(GroupKey.getKey(dataId, group));
-                    log.info("[{}] [Polling resp] config changed. dataId={}, group={}", dataId, group);
+                    // 无部门的
+                    updateList.add(GroupKeyUtil.getKey(dataId, group));
+                    log.info(" [Polling resp] config changed. dataId={}, group={}", dataId, group);
                 } else if (keyArr.length == 3) {
+                    // 有部门的
                     String tenant = keyArr[2];
-                    updateList.add(GroupKey.getKeyTenant(dataId, group, tenant));
+                    updateList.add(GroupKeyUtil.getKeyTenant(dataId, group, tenant));
                     log.info("[Polling resp] config changed. dataId={}, group={}, tenant={}", dataId, group, tenant);
                 } else {
-                    log.error("[{}] [Polling resp] invalid dataIdAndGroup error {}", dataIdAndGroup);
+                    log.error(" [Polling resp] invalid dataIdAndGroup error {}", dataIdAndGroup);
                 }
             }
         }
@@ -319,13 +327,13 @@ public class ClientWorker implements Closeable {
     }
 
     public CacheData addCacheDataIfAbsent(String namespace, String itemId, String tpId) {
-        CacheData cacheData = cacheMap.get(tpId);
+        CacheData cacheData = cacheMap.get().get(tpId);
         if (cacheData != null) {
             return cacheData;
         }
 
         cacheData = new CacheData(namespace, itemId, tpId);
-        CacheData lastCacheData = cacheMap.putIfAbsent(tpId, cacheData);
+        CacheData lastCacheData = cacheMap.get().putIfAbsent(tpId, cacheData);
         if (lastCacheData == null) {
             String serverConfig = null;
             try {
@@ -336,7 +344,7 @@ public class ClientWorker implements Closeable {
                 log.error("[Cache Data] Error. Service Unavailable :: {}", ex.getMessage());
             }
 
-            int taskId = cacheMap.size() / CONFIG_LONG_POLL_TIMEOUT;
+            int taskId = cacheMap.get().size() / Constants.CONFIG_LONG_POLL_TIMEOUT;
             cacheData.setTaskId(taskId);
 
             lastCacheData = cacheData;
