@@ -7,6 +7,7 @@ import com.vegeta.client.config.http.CorsConfig;
 import com.vegeta.client.config.http.HttpClientConfig;
 import com.vegeta.client.config.register.RegisterClientConfig;
 import com.vegeta.client.core.ConfigService;
+import com.vegeta.client.core.DynamicThreadPoolPostProcessor;
 import com.vegeta.client.core.ThreadPoolConfigService;
 import com.vegeta.client.handler.DynamicThreadPoolBannerHandler;
 import com.vegeta.client.oapi.HttpAgent;
@@ -73,17 +74,18 @@ public class VegetaAutoConfiguration {
         return new ThreadPoolConfigService(httpAgent, identification);
     }
 
+    // 初始化 ThreadPoolOperation bean
     @Bean
     public ThreadPoolOperation threadPoolOperation(ConfigService configService) {
         return new ThreadPoolOperation(properties, configService);
     }
 
-//    @Bean
-//    @SuppressWarnings("all")
-//    public DynamicThreadPoolPostProcessor threadPoolBeanPostProcessor(HttpAgent httpAgent, ThreadPoolOperation threadPoolOperation,
-//                                                                      ApplicationContextHolder hippo4JApplicationContextHolder) {
-//        return new DynamicThreadPoolPostProcessor(properties, httpAgent, threadPoolOperation);
-//    }
+    @Bean
+    @SuppressWarnings("all")
+    public DynamicThreadPoolPostProcessor threadPoolBeanPostProcessor(HttpAgent httpAgent, ThreadPoolOperation threadPoolOperation,
+                                                                      ApplicationContextHolder hippo4JApplicationContextHolder) {
+        return new DynamicThreadPoolPostProcessor(properties, httpAgent, threadPoolOperation);
+    }
 
 //    @Bean
 //    public PoolRunStateController poolRunStateController() {

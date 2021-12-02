@@ -13,11 +13,12 @@ import java.util.concurrent.*;
 /**
  * ThreadPool builder.
  *
- * @author chen.ma
- * @date 2021/6/28 17:29
+ * @Author fuzhiqiang
+ * @Date 2021/12/2
  */
 public class ThreadPoolBuilder implements Builder<ThreadPoolExecutor> {
 
+    private static final long serialVersionUID = 8829250559192748663L;
     /**
      * 是否创建快速消费线程池
      */

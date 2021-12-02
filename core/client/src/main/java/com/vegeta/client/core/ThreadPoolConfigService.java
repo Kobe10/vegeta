@@ -14,6 +14,7 @@ public class ThreadPoolConfigService implements ConfigService {
 
     private final ClientWorker clientWorker;
 
+    // 初始化clientWork 初始化配置check任务
     public ThreadPoolConfigService(HttpAgent httpAgent, String identification) {
         clientWorker = new ClientWorker(httpAgent, identification);
     }

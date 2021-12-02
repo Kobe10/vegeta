@@ -1,6 +1,6 @@
 package com.vegeta.client.wapper;
 
-import cn.hippo4j.starter.common.CommonDynamicThreadPool;
+import com.vegeta.client.core.CommonDynamicThreadPool;
 import lombok.Data;
 
 import java.util.concurrent.Callable;
@@ -10,15 +10,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * Dynamic threadPool wrapper.
  *
- * @author chen.ma
- * @date 2021/6/20 16:55
+ * @Author fuzhiqiang
+ * @Date 2021/12/2
  */
 @Data
 public class DynamicThreadPoolWrapper {
 
     private String tenantId;
 
-    private String itemId;
+    private String appId;
 
     private String tpId;
 
@@ -29,7 +29,7 @@ public class DynamicThreadPoolWrapper {
     /**
      * 首选服务端线程池, 为空使用默认线程池 {@link CommonDynamicThreadPool#getInstance(String)}
      *
-     * @param threadPoolId 线程id
+     * @param threadPoolId 线程池id
      */
     public DynamicThreadPoolWrapper(String threadPoolId) {
         this(threadPoolId, CommonDynamicThreadPool.getInstance(threadPoolId));
