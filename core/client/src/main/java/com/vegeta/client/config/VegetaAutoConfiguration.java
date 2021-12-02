@@ -1,12 +1,16 @@
 package com.vegeta.client.config;
 
+import cn.hutool.core.util.StrUtil;
 import com.vegeta.client.config.alarm.MessageAlarmConfig;
 import com.vegeta.client.config.bootstrap.BootstrapProperties;
 import com.vegeta.client.config.http.CorsConfig;
 import com.vegeta.client.config.http.HttpClientConfig;
 import com.vegeta.client.config.register.RegisterClientConfig;
 import com.vegeta.client.core.ConfigService;
+import com.vegeta.client.core.ThreadPoolConfigService;
 import com.vegeta.client.handler.DynamicThreadPoolBannerHandler;
+import com.vegeta.client.oapi.HttpAgent;
+import com.vegeta.client.tool.inet.InetUtils;
 import com.vegeta.client.tool.thread.ThreadPoolOperation;
 import com.vegeta.global.config.ApplicationContextHolder;
 import lombok.AllArgsConstructor;
@@ -58,14 +62,16 @@ public class VegetaAutoConfiguration {
         return new ApplicationContextHolder();
     }
 
-//    @Bean
-//    @SuppressWarnings("all")
-//    public ConfigService configService(HttpAgent httpAgent, InetUtils hippo4JInetUtils) {
-//        String ip = hippo4JInetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-//        String port = environment.getProperty("server.port");
-//        String identification = StrUtil.builder(ip, ":", port).toString();
-//        return new ThreadPoolConfigService(httpAgent, identification);
-//    }
+    @Bean
+    @SuppressWarnings("all")
+    public ConfigService configService(HttpAgent httpAgent, InetUtils inetUtils) {
+        // 获取本机固定ip
+        String ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+        String port = environment.getProperty("server.port");
+        String identification = StrUtil.builder(ip, ":", port).toString();
+        // 初始化  clientWork
+        return new ThreadPoolConfigService(httpAgent, identification);
+    }
 
     @Bean
     public ThreadPoolOperation threadPoolOperation(ConfigService configService) {

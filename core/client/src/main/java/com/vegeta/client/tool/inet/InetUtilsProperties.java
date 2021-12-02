@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * Inet utils properties.
  *
- * @author chen.ma
- * @date 2021/11/12 21:34
+ * @Author fuzhiqiang
+ * @Date 2021/12/2
  */
 @ConfigurationProperties(InetUtilsProperties.PREFIX)
 public class InetUtilsProperties {
@@ -104,5 +104,4 @@ public class InetUtilsProperties {
     public void setPreferredNetworks(List<String> preferredNetworks) {
         this.preferredNetworks = preferredNetworks;
     }
-
 }
