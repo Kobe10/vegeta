@@ -5,8 +5,6 @@ import com.vegeta.client.config.bootstrap.BootstrapProperties;
 import com.vegeta.client.oapi.HttpAgent;
 import com.vegeta.client.tool.ThreadPoolBuilder;
 import com.vegeta.client.tool.thread.QueueTypeEnum;
-import com.vegeta.client.tool.thread.ThreadPoolOperation;
-import com.vegeta.client.wapper.DynamicThreadPoolWrapper;
 import com.vegeta.global.config.ApplicationContextHolder;
 import com.vegeta.global.consts.Constants;
 import lombok.AllArgsConstructor;
@@ -59,6 +57,7 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
                 return bean;
             }
             var dynamicExecutor = (DynamicThreadPoolExecutor) bean;
+
             var wrap = new DynamicThreadPoolWrapper(dynamicExecutor.getThreadPoolId(), dynamicExecutor);
             var remoteExecutor = fillPoolAndRegister(wrap);
             subscribeConfig(wrap);

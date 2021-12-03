@@ -3,7 +3,6 @@ package com.vegeta.client.core;
 import com.vegeta.client.tool.ThreadPoolBuilder;
 import com.vegeta.client.tool.thread.QueueTypeEnum;
 import com.vegeta.client.tool.thread.RejectedPolicies;
-
 import java.util.concurrent.TimeUnit;
 
 /**

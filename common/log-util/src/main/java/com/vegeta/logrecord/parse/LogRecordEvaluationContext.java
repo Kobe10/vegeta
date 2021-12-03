@@ -1,6 +1,6 @@
 package com.vegeta.logrecord.parse;
 
-import com.github.dynamic.threadpool.logrecord.context.LogRecordContext;
+import com.vegeta.logrecord.context.LogRecordContext;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.ParameterNameDiscoverer;
 
@@ -10,8 +10,8 @@ import java.util.Map;
 /**
  * Log record evaluation context.
  *
- * @author chen.ma
- * @date 2021/10/24 21:25
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class LogRecordEvaluationContext extends MethodBasedEvaluationContext {
 

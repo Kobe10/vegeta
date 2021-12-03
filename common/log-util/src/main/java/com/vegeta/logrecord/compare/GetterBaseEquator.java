@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * 所有无参的 get 和 is 方法都认为是对象的属性
  *
- * @author chen.ma
- * @date 2021/10/24 20:36
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @NoArgsConstructor
 public class GetterBaseEquator extends AbstractEquator {

@@ -1,7 +1,7 @@
 package com.vegeta.logrecord.parse;
 
-import com.github.dynamic.threadpool.logrecord.annotation.LogRecord;
-import com.github.dynamic.threadpool.logrecord.model.LogRecordOps;
+import com.vegeta.logrecord.annotation.LogRecord;
+import com.vegeta.logrecord.model.LogRecordOps;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
@@ -16,8 +16,8 @@ import java.util.Collection;
 /**
  * 日志记录操作解析.
  *
- * @author chen.ma
- * @date 2021/10/23 22:02
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class LogRecordOperationSource {
 
@@ -67,5 +67,4 @@ public class LogRecordOperationSource {
                     ae.toString() + "'. 'one of successTemplate and failLogTemplate' attribute must be set.");
         }
     }
-
 }

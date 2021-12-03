@@ -1,12 +1,12 @@
 package com.vegeta.logrecord.service.impl;
 
-import com.github.dynamic.threadpool.logrecord.service.ParseFunction;
+import com.vegeta.logrecord.service.ParseFunction;
 
 /**
  * 默认实现.
  *
- * @author chen.ma
- * @date 2021/10/24 17:57
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class DefaultParseFunction implements ParseFunction {
 
@@ -24,5 +24,4 @@ public class DefaultParseFunction implements ParseFunction {
     public String apply(String value) {
         return null;
     }
-
 }

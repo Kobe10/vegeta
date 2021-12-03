@@ -15,12 +15,12 @@ import java.util.Map;
 /**
  * Log record expression evaluator.
  *
- * @author chen.ma
- * @date 2021/10/24 22:22
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class LogRecordExpressionEvaluator extends CachedExpressionEvaluator {
 
-    private Map<ExpressionKey, Expression> expressionCache = Maps.newConcurrentMap();
+    private final Map<ExpressionKey, Expression> expressionCache = Maps.newConcurrentMap();
 
     private final Map<AnnotatedElementKey, Method> targetMethodCache = Maps.newConcurrentMap();
 
@@ -49,5 +49,4 @@ public class LogRecordExpressionEvaluator extends CachedExpressionEvaluator {
         }
         return targetMethod;
     }
-
 }

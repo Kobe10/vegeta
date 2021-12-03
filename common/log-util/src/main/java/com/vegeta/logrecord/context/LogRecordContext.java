@@ -9,8 +9,8 @@ import java.util.Stack;
 /**
  * 日志记录上下文.
  *
- * @author chen.ma
- * @date 2021/10/23 21:47
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class LogRecordContext {
 
@@ -42,5 +42,4 @@ public class LogRecordContext {
         Stack<Map<String, Object>> mapStack = VARIABLE_MAP_STACK.get();
         return mapStack.peek();
     }
-
 }

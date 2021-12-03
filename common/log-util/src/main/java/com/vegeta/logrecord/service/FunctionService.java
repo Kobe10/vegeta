@@ -3,8 +3,8 @@ package com.vegeta.logrecord.service;
 /**
  * 函数服务.
  *
- * @author chen.ma
- * @date 2021/10/24 21:30
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public interface FunctionService {
 
@@ -24,5 +24,4 @@ public interface FunctionService {
      * @return
      */
     boolean beforeFunction(String functionName);
-
 }

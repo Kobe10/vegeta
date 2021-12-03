@@ -2,11 +2,13 @@ package com.vegeta.logrecord.model;
 
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 方法执行结果.
  *
- * @author chen.ma
- * @date 2021/10/24 21:59
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @Data
 @NoArgsConstructor
@@ -17,7 +19,7 @@ public class MethodExecuteResult {
     /**
      * 是否成功
      */
-    @NonNull
+    @NotNull
     private boolean success;
 
     /**
@@ -30,4 +32,7 @@ public class MethodExecuteResult {
      */
     private String errorMsg;
 
+    public MethodExecuteResult(boolean b) {
+        this.success = b;
+    }
 }

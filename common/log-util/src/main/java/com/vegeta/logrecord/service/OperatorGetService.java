@@ -1,20 +1,17 @@
 package com.vegeta.logrecord.service;
 
-import com.github.dynamic.threadpool.logrecord.model.Operator;
+import com.vegeta.logrecord.model.Operator;
 
 /**
  * 获取操作人.
  *
- * @author chen.ma
- * @date 2021/10/23 22:46
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public interface OperatorGetService {
 
     /**
      * 获取操作人.
-     *
-     * @return
      */
     Operator getUser();
-
 }

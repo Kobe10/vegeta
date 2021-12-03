@@ -9,8 +9,8 @@ import java.util.Objects;
 /**
  * 对象比较中不同的字段.
  *
- * @author chen.ma
- * @date 2021/10/24 20:03
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @Data
 @NoArgsConstructor
@@ -75,6 +75,4 @@ public class FieldInfo {
     public int hashCode() {
         return Objects.hash(fieldName, firstFieldType, secondFieldType, firstVal, secondVal);
     }
-
-
 }

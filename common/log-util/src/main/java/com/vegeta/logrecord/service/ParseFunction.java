@@ -3,15 +3,13 @@ package com.vegeta.logrecord.service;
 /**
  * 函数解析.
  *
- * @author chen.ma
- * @date 2021/10/23 22:40
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public interface ParseFunction {
 
     /**
      * 是否先执行.
-     *
-     * @return
      */
     default boolean executeBefore() {
         return false;
@@ -19,8 +17,6 @@ public interface ParseFunction {
 
     /**
      * 函数名称.
-     *
-     * @return
      */
     String functionName();
 
@@ -28,8 +24,6 @@ public interface ParseFunction {
      * 执行.
      *
      * @param value
-     * @return
      */
     String apply(String value);
-
 }

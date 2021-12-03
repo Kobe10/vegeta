@@ -12,7 +12,7 @@ import com.vegeta.client.core.ThreadPoolConfigService;
 import com.vegeta.client.handler.DynamicThreadPoolBannerHandler;
 import com.vegeta.client.oapi.HttpAgent;
 import com.vegeta.client.tool.inet.InetUtils;
-import com.vegeta.client.tool.thread.ThreadPoolOperation;
+import com.vegeta.client.core.ThreadPoolOperation;
 import com.vegeta.global.config.ApplicationContextHolder;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;

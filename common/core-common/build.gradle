@@ -6,7 +6,7 @@ dependencies {
     // 依赖日志组件
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation("org.projectlombok:lombok")
+    api("org.projectlombok:lombok")
     api("org.apache.commons:commons-lang3")
     api("org.slf4j:slf4j-api")
     implementation("com.squareup.okhttp3:logging-interceptor")

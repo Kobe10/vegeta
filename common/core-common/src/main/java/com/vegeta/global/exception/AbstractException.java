@@ -28,11 +28,11 @@ public abstract class AbstractException extends RuntimeException {
     /**
      * 错误返回结果
      */
-    protected FailResponse failResponse;
-
-    public FailResponse getFailResponse() {
-        return failResponse;
-    }
+//    protected FailResponse failResponse;
+//
+//    public FailResponse getFailResponse() {
+//        return failResponse;
+//    }
 
     @Override
     public String getMessage() {

@@ -1,4 +1,4 @@
-package com.vegeta.client.tool.thread;
+package com.vegeta.client.core;
 
 import com.vegeta.client.config.bootstrap.BootstrapProperties;
 import com.vegeta.client.core.ConfigService;

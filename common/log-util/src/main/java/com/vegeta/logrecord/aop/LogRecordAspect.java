@@ -1,17 +1,17 @@
 package com.vegeta.logrecord.aop;
 
-import com.github.dynamic.threadpool.logrecord.annotation.LogRecord;
-import com.github.dynamic.threadpool.logrecord.context.LogRecordContext;
-import com.github.dynamic.threadpool.logrecord.model.LogRecordInfo;
-import com.github.dynamic.threadpool.logrecord.model.LogRecordOps;
-import com.github.dynamic.threadpool.logrecord.model.MethodExecuteResult;
-import com.github.dynamic.threadpool.logrecord.parse.LogRecordOperationSource;
-import com.github.dynamic.threadpool.logrecord.parse.LogRecordValueParser;
-import com.github.dynamic.threadpool.logrecord.service.LogRecordService;
-import com.github.dynamic.threadpool.logrecord.service.OperatorGetService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vegeta.logrecord.annotation.LogRecord;
+import com.vegeta.logrecord.context.LogRecordContext;
+import com.vegeta.logrecord.model.LogRecordInfo;
+import com.vegeta.logrecord.model.LogRecordOps;
+import com.vegeta.logrecord.model.MethodExecuteResult;
+import com.vegeta.logrecord.parse.LogRecordOperationSource;
+import com.vegeta.logrecord.parse.LogRecordValueParser;
+import com.vegeta.logrecord.service.LogRecordService;
+import com.vegeta.logrecord.service.OperatorGetService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -30,8 +30,8 @@ import java.util.*;
 /**
  * 日志记录切面.
  *
- * @author chen.ma
- * @date 2021/10/23 22:00
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @Slf4j
 @Aspect
@@ -202,5 +202,4 @@ public class LogRecordAspect {
     private String getRealOperatorId(LogRecordOps operation, String operatorIdFromService, Map<String, String> expressionValues) {
         return !StringUtils.isEmpty(operatorIdFromService) ? operatorIdFromService : expressionValues.get(operation.getOperatorId());
     }
-
 }

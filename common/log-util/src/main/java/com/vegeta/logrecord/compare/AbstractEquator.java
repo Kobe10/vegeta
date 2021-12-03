@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 /**
  * 比对器抽象类.
  *
- * @author chen.ma
- * @date 2021/10/24 20:25
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class AbstractEquator implements Equator {
 

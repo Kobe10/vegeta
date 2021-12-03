@@ -3,8 +3,8 @@ package com.vegeta.logrecord.enums;
 /**
  * 日志记录类型.
  *
- * @author chen.ma
- * @date 2021/10/24 21:54
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public enum LogRecordTypeEnum {
 
@@ -17,5 +17,4 @@ public enum LogRecordTypeEnum {
      * 比较修改前后所有区别
      */
     COMPLETE
-
 }

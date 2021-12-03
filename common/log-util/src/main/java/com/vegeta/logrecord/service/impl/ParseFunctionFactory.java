@@ -1,7 +1,7 @@
 package com.vegeta.logrecord.service.impl;
 
-import com.github.dynamic.threadpool.logrecord.service.ParseFunction;
 import com.google.common.collect.Maps;
+import com.vegeta.logrecord.service.ParseFunction;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -11,8 +11,8 @@ import java.util.Map;
 /**
  * 函数解析工厂.
  *
- * @author chen.ma
- * @date 2021/10/23 22:39
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class ParseFunctionFactory {
 
@@ -52,5 +52,4 @@ public class ParseFunctionFactory {
     public boolean isBeforeFunction(String functionName) {
         return allFunctionMap.get(functionName) != null && allFunctionMap.get(functionName).executeBefore();
     }
-
 }

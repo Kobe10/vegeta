@@ -1,12 +1,12 @@
 package com.vegeta.logrecord.config;
 
-import com.github.dynamic.threadpool.logrecord.parse.LogRecordOperationSource;
-import com.github.dynamic.threadpool.logrecord.parse.LogRecordValueParser;
-import com.github.dynamic.threadpool.logrecord.service.FunctionService;
-import com.github.dynamic.threadpool.logrecord.service.LogRecordService;
-import com.github.dynamic.threadpool.logrecord.service.OperatorGetService;
-import com.github.dynamic.threadpool.logrecord.service.ParseFunction;
-import com.github.dynamic.threadpool.logrecord.service.impl.*;
+import com.vegeta.logrecord.parse.LogRecordOperationSource;
+import com.vegeta.logrecord.parse.LogRecordValueParser;
+import com.vegeta.logrecord.service.FunctionService;
+import com.vegeta.logrecord.service.LogRecordService;
+import com.vegeta.logrecord.service.OperatorGetService;
+import com.vegeta.logrecord.service.ParseFunction;
+import com.vegeta.logrecord.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

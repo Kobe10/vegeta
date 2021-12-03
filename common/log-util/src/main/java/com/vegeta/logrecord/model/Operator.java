@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 /**
  * 操作人.
  *
- * @author chen.ma
- * @date 2021/10/24 21:44
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @Data
 @NoArgsConstructor
@@ -19,5 +19,4 @@ public class Operator {
      * 操作人 Id
      */
     private String operatorId;
-
 }

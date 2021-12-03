@@ -12,8 +12,8 @@ import java.util.Date;
 /**
  * 日志记录实体.
  *
- * @author chen.ma
- * @date 2021/10/24 17:47
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @Data
 @Builder
