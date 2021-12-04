@@ -3,6 +3,7 @@ package com.vegeta.client.core;
 import com.vegeta.client.oapi.HttpAgent;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * 线程池配置服务
@@ -21,7 +22,7 @@ public class ThreadPoolConfigService implements ConfigService {
 
     @Override
     public void addListener(String tenantId, String appId, String tpId, Listener listener) {
-        clientWorker.addTenantListeners(tenantId, appId, tpId, Arrays.asList(listener));
+        clientWorker.addTenantListeners(tenantId, appId, tpId, Collections.singletonList(listener));
     }
 
     @Override

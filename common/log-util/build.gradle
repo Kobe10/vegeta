@@ -3,11 +3,13 @@
  */
 
 dependencies {
-    compile project(":common:core-common")
 
-    compile 'org.aspectj:aspectjweaver'
-    compile 'com.alibaba:transmittable-thread-local:2.12.1'
-    compile 'org.hibernate.validator:hibernate-validator'
-//    implementation 'org.springframework.boot:spring-boot-starter-web'
+    api(
+            project(':common:core-common'),
+    )
+
+    implementation 'org.aspectj:aspectjweaver'
+    implementation 'com.alibaba:transmittable-thread-local:2.12.1'
+    implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springframework.boot:spring-boot-starter'
 }

@@ -9,12 +9,5 @@ import java.io.Serializable;
  * @Date 2021/11/24
  */
 public interface Builder<T> extends Serializable {
-
-    /**
-     * Build.
-     *
-     * @return
-     */
     T build();
-
 }

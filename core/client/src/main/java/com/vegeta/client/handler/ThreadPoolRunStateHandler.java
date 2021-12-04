@@ -2,6 +2,10 @@ package com.vegeta.client.handler;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.RuntimeInfo;
+import com.vegeta.client.core.DynamicThreadPoolExecutor;
+import com.vegeta.client.core.ThreadPoolManager;
+import com.vegeta.client.wapper.DynamicThreadPoolWrapper;
+import com.vegeta.global.model.PoolRunStateInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
@@ -28,8 +32,16 @@ public class ThreadPoolRunStateHandler {
         }
     }
 
+    /**
+     * 获取线程池运行状态信息
+     *
+     * @param tpId 线程池id
+     * @return com.vegeta.global.model.PoolRunStateInfo
+     * @Author fuzhiqiang
+     * @Date 2021/12/3
+     */
     public static PoolRunStateInfo getPoolRunState(String tpId) {
-        DynamicThreadPoolWrapper executorService = GlobalThreadPoolManage.getExecutorService(tpId);
+        DynamicThreadPoolWrapper executorService = ThreadPoolManager.getExecutorService(tpId);
         ThreadPoolExecutor pool = executorService.getExecutor();
 
         // 核心线程数
@@ -45,9 +57,9 @@ public class ThreadPoolRunStateHandler {
         // 线程池中执行任务总数量 (有锁)
         long completedTaskCount = pool.getCompletedTaskCount();
         // 当前负载
-        String currentLoad = CalculateUtil.divide(activeCount, maximumPoolSize) + "%";
+        String currentLoad = divide(activeCount, maximumPoolSize) + "%";
         // 峰值负载
-        String peakLoad = CalculateUtil.divide(largestPoolSize, maximumPoolSize) + "%";
+        String peakLoad = divide(largestPoolSize, maximumPoolSize) + "%";
 
         BlockingQueue<Runnable> queue = pool.getQueue();
         // 队列类型
@@ -62,10 +74,8 @@ public class ThreadPoolRunStateHandler {
         // 内存占比: 使用内存 / 最大内存
         RuntimeInfo runtimeInfo = new RuntimeInfo();
         String memoryProportion = StrUtil.builder(
-                "已分配: ",
-                ByteConvertUtil.getPrintSize(runtimeInfo.getTotalMemory()),
-                " / 最大可用: ",
-                ByteConvertUtil.getPrintSize(runtimeInfo.getMaxMemory())
+                "已分配: ", getPrintSize(runtimeInfo.getTotalMemory()),
+                " / 最大可用: ", getPrintSize(runtimeInfo.getMaxMemory())
         ).toString();
 
         PoolRunStateInfo stateInfo = new PoolRunStateInfo();
@@ -84,8 +94,9 @@ public class ThreadPoolRunStateHandler {
         stateInfo.setHost(INET_ADDRESS.getHostAddress());
         stateInfo.setTpId(tpId);
         stateInfo.setMemoryProportion(memoryProportion);
-        stateInfo.setFreeMemory(ByteConvertUtil.getPrintSize(runtimeInfo.getFreeMemory()));
+        stateInfo.setFreeMemory(getPrintSize(runtimeInfo.getFreeMemory()));
 
+        // 判断线程池类型是否为  动态线程池DynamicThreadPoolExecutor  动态线程池计算拒绝线程数量
         int rejectCount = pool instanceof DynamicThreadPoolExecutor
                 ? ((DynamicThreadPoolExecutor) pool).getRejectCount()
                 : -1;
@@ -94,4 +105,33 @@ public class ThreadPoolRunStateHandler {
         return stateInfo;
     }
 
+    public static int divide(int num1, int num2) {
+        return ((int) (Double.parseDouble(num1 + "") / Double.parseDouble(num2 + "") * 100));
+    }
+
+    /**
+     * 字节转换.
+     *
+     * @param size 字节大小
+     */
+    public static String getPrintSize(long size) {
+        long covertNum = 1024;
+        if (size < covertNum) {
+            return size + "B";
+        } else {
+            size = size / covertNum;
+        }
+        if (size < covertNum) {
+            return size + "KB";
+        } else {
+            size = size / covertNum;
+        }
+        if (size < covertNum) {
+            size = size * 100;
+            return (size / 100) + "." + (size % 100) + "MB";
+        } else {
+            size = size * 100 / covertNum;
+            return (size / 100) + "." + (size % 100) + "GB";
+        }
+    }
 }

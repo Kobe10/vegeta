@@ -5,8 +5,12 @@ import com.vegeta.client.config.bootstrap.BootstrapProperties;
 import com.vegeta.client.oapi.HttpAgent;
 import com.vegeta.client.tool.ThreadPoolBuilder;
 import com.vegeta.client.tool.thread.QueueTypeEnum;
+import com.vegeta.client.tool.thread.RejectedTypeEnum;
+import com.vegeta.client.wapper.DynamicThreadPoolWrapper;
 import com.vegeta.global.config.ApplicationContextHolder;
 import com.vegeta.global.consts.Constants;
+import com.vegeta.global.http.result.base.Result;
+import com.vegeta.global.model.PoolParameterInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
@@ -25,8 +29,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 动态线程池  后置处理器
  *
- * @author chen.ma
- * @date 2021/8/2 20:40
+ * @Author fuzhiqiang
+ * @Date 2021/12/4
  */
 @Slf4j
 @AllArgsConstructor
@@ -59,7 +63,7 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
             var dynamicExecutor = (DynamicThreadPoolExecutor) bean;
 
             var wrap = new DynamicThreadPoolWrapper(dynamicExecutor.getThreadPoolId(), dynamicExecutor);
-            var remoteExecutor = fillPoolAndRegister(wrap);
+            var remoteExecutor = assemblePoolInfoAndRegister(wrap);
             subscribeConfig(wrap);
             return remoteExecutor;
         } else if (bean instanceof DynamicThreadPoolWrapper) {
@@ -71,28 +75,35 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
     }
 
     /**
-     * Register and subscribe.
+     * 1、向服务端注册信息，本地缓存对应配置信息 (方便后续check config update)
+     * 2、订阅配置信息变更
      *
-     * @param dynamicThreadPoolWrap
+     * @param dynamicThreadPoolWrap 包装器
+     * @Author fuzhiqiang
+     * @Date 2021/12/4
      */
-    protected void registerAndSubscribe(DynamicThreadPoolWrapper dynamicThreadPoolWrap) {
+    private void registerAndSubscribe(DynamicThreadPoolWrapper dynamicThreadPoolWrap) {
         executorService.execute(() -> {
-            fillPoolAndRegister(dynamicThreadPoolWrap);
+            assemblePoolInfoAndRegister(dynamicThreadPoolWrap);
             subscribeConfig(dynamicThreadPoolWrap);
         });
     }
 
     /**
-     * Fill the thread pool and register.
+     * 组装线程池参数，从服务端获取配置信息；
+     * 如果存在配置信息，那么生成打包器，利用线程池管理器在本地进行线程池的注册；
      *
-     * @param dynamicThreadPoolWrap
+     * @param dynamicThreadPoolWrap 包装器
+     * @return java.util.concurrent.ThreadPoolExecutor
+     * @Author fuzhiqiang
+     * @Date 2021/12/4
      */
-    protected ThreadPoolExecutor fillPoolAndRegister(DynamicThreadPoolWrapper dynamicThreadPoolWrap) {
+    private ThreadPoolExecutor assemblePoolInfoAndRegister(DynamicThreadPoolWrapper dynamicThreadPoolWrap) {
         String tpId = dynamicThreadPoolWrap.getTpId();
         Map<String, String> queryStrMap = new HashMap(3);
         queryStrMap.put(Constants.TP_ID, tpId);
-        queryStrMap.put(ITEM_ID, properties.getItemId());
-        queryStrMap.put(NAMESPACE, properties.getNamespace());
+        queryStrMap.put(Constants.ITEM_ID, properties.getAppId());
+        queryStrMap.put(Constants.NAMESPACE, properties.getNamespace());
 
         Result result;
         boolean isSubscribe = false;
@@ -100,9 +111,10 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
         PoolParameterInfo ppi = new PoolParameterInfo();
 
         try {
+            // path:  /v1/cs/configs  从服务端拉取配置，然后在本地创建对应线程池
             result = httpAgent.httpGetByConfig(Constants.CONFIG_CONTROLLER_PATH, null, queryStrMap, 5000L);
             if (result.isSuccess() && result.getData() != null && (ppi = JSON.toJavaObject((JSON) result.getData(), PoolParameterInfo.class)) != null) {
-                // 使用相关参数创建线程池
+                // 创建阻塞队列  (通过spi实现)
                 BlockingQueue workQueue = QueueTypeEnum.createBlockingQueue(ppi.getQueueType(), ppi.getCapacity());
                 poolExecutor = (DynamicThreadPoolExecutor) ThreadPoolBuilder.builder()
                         .dynamicPool()
@@ -130,8 +142,8 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
             // 设置是否订阅远端线程池配置
             dynamicThreadPoolWrap.setSubscribeFlag(isSubscribe);
         }
-
-        GlobalThreadPoolManage.register(dynamicThreadPoolWrap.getTpId(), ppi, dynamicThreadPoolWrap);
+        // 线程池参数、打包器写入内存
+        ThreadPoolManager.register(dynamicThreadPoolWrap.getTpId(), ppi, dynamicThreadPoolWrap);
         return poolExecutor;
     }
 
@@ -139,11 +151,10 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
      * 订阅配置信息
      *
      * @param dynamicThreadPoolWrap 包装器
-     * @return void
      * @Author fuzhiqiang
      * @Date 2021/12/2
      */
-    protected void subscribeConfig(DynamicThreadPoolWrapper dynamicThreadPoolWrap) {
+    private void subscribeConfig(DynamicThreadPoolWrapper dynamicThreadPoolWrap) {
         if (dynamicThreadPoolWrap.isSubscribeFlag()) {
             threadPoolOperation.subscribeConfig(dynamicThreadPoolWrap.getTpId(), executorService, ThreadPoolDynamicRefresh::refreshDynamicPool);
         }

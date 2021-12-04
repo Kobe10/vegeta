@@ -1,9 +1,9 @@
 dependencies {
     // 依赖日志组件
-    compile project(":common:log-util")
-    compile project(":common:core-common")
+    api project(":common:log-util")
+    api project(":common:core-common")
 
-    compile 'tk.mybatis:mapper-spring-boot-starter:2.1.5'
-    compile 'com.baomidou:mybatis-plus-boot-starter:3.4.1'
+    api 'tk.mybatis:mapper-spring-boot-starter:2.1.5'
+    api 'com.baomidou:mybatis-plus-boot-starter:3.4.1'
     api group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
 }

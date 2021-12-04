@@ -18,7 +18,7 @@ public class CommonIdUtil {
     private static final String SEPARATOR = ":";
 
     /**
-     * 获取默认实例id 生成规则:
+     * 获取默认实例id 生成规则:   192.168.0.105:vegeta-example:8090
      *
      * @param resolver
      * @param inetUtils
@@ -28,6 +28,7 @@ public class CommonIdUtil {
      */
     @SneakyThrows
     public static String getDefaultInstanceId(PropertyResolver resolver, InetUtils inetUtils) {
+        // example    -----    192.168.0.105:vegeta-example
         String namePart = getIpApplicationName(resolver, inetUtils);
         String indexPart = resolver.getProperty("spring.application.instance_id", Objects.requireNonNull(resolver.getProperty("server.port")));
         return combineParts(namePart, SEPARATOR, indexPart);

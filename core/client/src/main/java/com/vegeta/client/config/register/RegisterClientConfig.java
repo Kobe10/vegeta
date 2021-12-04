@@ -26,7 +26,7 @@ import static com.vegeta.global.consts.Constants.*;
  */
 @AllArgsConstructor
 public class RegisterClientConfig {
-    // 当前环境的所有的配置文件信息
+    // yaml 文件的所有配置信息
     private final ConfigurableEnvironment environment;
 
     // 动态线程池客户端配置属性
@@ -39,7 +39,7 @@ public class RegisterClientConfig {
     public InstanceInfo instanceConfig() {
         InstanceInfo instanceInfo = new InstanceInfo();
         instanceInfo.setInstanceId(
-                        // hostIp + applicationName + spring.application.instance_id(默认端口号)
+                        // hostIp + applicationName + spring.application.instance_id(默认端口号)     192.168.0.105:vegeta-example:8090
                         getDefaultInstanceId(environment, inetUtils))
                 // hostIp + applicationName
                 .setIpApplicationName(getIpApplicationName(environment, inetUtils))
@@ -47,7 +47,7 @@ public class RegisterClientConfig {
                 .setAppName(environment.getProperty(SPRING_APPLICATION_NAME))
                 // content-path
                 .setClientBasePath(environment.getProperty(SERVER_SERVLET_CONTENT_PATH))
-                // （appId + namespace）
+                // （appId + namespace）     vegeta-example+prescription
                 .setGroupKey(ContentUtil.getGroupKey(properties.getAppId(), properties.getNamespace()));
 
         // 回调地址基础路径
@@ -59,6 +59,7 @@ public class RegisterClientConfig {
         String port = environment.getProperty(SERVER_PORT);
         // 身份标识
         String identification = StrUtil.builder(ip, ":", port).toString();
+        // 192.168.0.105:8090
         instanceInfo.setIdentify(identification);
         return instanceInfo;
     }

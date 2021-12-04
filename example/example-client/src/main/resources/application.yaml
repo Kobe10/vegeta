@@ -1,0 +1,24 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /example
+
+spring:
+  profiles:
+    active: dev
+
+  # 应用配置
+  application:
+    name: vegeta-example
+  # 动态线程池配置
+  dynamic:
+    thread-pool:
+      server-addr: http://localhost:6691
+      namespace: prescription
+      app-id: ${spring.application.name}
+
+logging:
+  level:
+    io.swagger.models.parameters.AbstractSerializableParameter: error
+  config: classpath:logback-spring.xml
+

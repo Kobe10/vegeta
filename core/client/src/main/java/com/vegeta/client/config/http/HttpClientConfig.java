@@ -15,13 +15,13 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
 /**
  * Http client config.
  *
  * @author fuzq
  * @date 2021/6/10 13:28
  */
+@Slf4j
 public class HttpClientConfig {
     @Bean
     public OkHttpClient hippo4JOkHttpClient() {
@@ -34,7 +34,7 @@ public class HttpClientConfig {
     }
 
     @Bean
-    public HttpClientUtil hippo4JHttpClientUtil() {
+    public HttpClientUtil vegetaHttpClientUtil() {
         return new HttpClientUtil();
     }
 
@@ -43,6 +43,7 @@ public class HttpClientConfig {
         return new ServerHttpAgent(properties, hippo4JHttpClientUtil);
     }
 
+    // 支持https
     @SneakyThrows
     private void supportHttps(OkHttpClient.Builder builder) {
         final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {

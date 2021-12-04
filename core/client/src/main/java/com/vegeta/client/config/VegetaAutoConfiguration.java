@@ -1,6 +1,7 @@
 package com.vegeta.client.config;
 
 import cn.hutool.core.util.StrUtil;
+import com.vegeta.client.annotion.VegetaMarkerConfiguration;
 import com.vegeta.client.config.alarm.MessageAlarmConfig;
 import com.vegeta.client.config.bootstrap.BootstrapProperties;
 import com.vegeta.client.config.http.CorsConfig;
@@ -9,13 +10,14 @@ import com.vegeta.client.config.register.RegisterClientConfig;
 import com.vegeta.client.core.ConfigService;
 import com.vegeta.client.core.DynamicThreadPoolPostProcessor;
 import com.vegeta.client.core.ThreadPoolConfigService;
+import com.vegeta.client.core.ThreadPoolOperation;
 import com.vegeta.client.handler.DynamicThreadPoolBannerHandler;
 import com.vegeta.client.oapi.HttpAgent;
 import com.vegeta.client.tool.inet.InetUtils;
-import com.vegeta.client.core.ThreadPoolOperation;
 import com.vegeta.global.config.ApplicationContextHolder;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,10 +33,15 @@ import org.springframework.core.env.ConfigurableEnvironment;
  */
 @Configuration
 @AllArgsConstructor
-//@ConditionalOnBean(MarkerConfiguration.Marker.class)
+// 只有当 VegetaMarkerConfiguration 注册之后  当前自动装配类才会生效
+// VegetaMarkerConfiguration 又是依赖 EnableVegeta 注解的导入
+// EnableVegeta 又是使用方的唯一入口；  这个自动 装配类就会扫描到所有的bean
+@ConditionalOnBean(VegetaMarkerConfiguration.Marker.class)
 @EnableConfigurationProperties(BootstrapProperties.class)
+// 自动配置 按照顺序 配置下列类
 @ImportAutoConfiguration({
         HttpClientConfig.class,
+        // 当前客户端基本信息
         RegisterClientConfig.class,
         MessageAlarmConfig.class,
         UtilAutoConfiguration.class,
@@ -48,9 +55,10 @@ public class VegetaAutoConfiguration {
 
     /**
      * banner 处理
-     * @Author fuzhiqiang
-     * @Date  2021/11/24
+     *
      * @return com.vegeta.client.handler.DynamicThreadPoolBannerHandler
+     * @Author fuzhiqiang
+     * @Date 2021/11/24
      */
     @Bean
     public DynamicThreadPoolBannerHandler threadPoolBannerHandler() {
@@ -69,6 +77,7 @@ public class VegetaAutoConfiguration {
         // 获取本机固定ip
         String ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
         String port = environment.getProperty("server.port");
+        // 192.168.0.105:8090
         String identification = StrUtil.builder(ip, ":", port).toString();
         // 初始化  clientWork
         return new ThreadPoolConfigService(httpAgent, identification);

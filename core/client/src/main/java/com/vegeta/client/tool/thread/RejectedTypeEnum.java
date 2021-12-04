@@ -1,8 +1,7 @@
 package com.vegeta.client.tool.thread;
 
-import cn.hippo4j.starter.spi.CustomRejectedExecutionHandler;
-import cn.hippo4j.starter.spi.DynamicTpServiceLoader;
-import com.vegeta.client.spi.DynamicTpServiceLoader;
+import com.vegeta.client.spi.CustomRejectedExecutionHandler;
+import com.vegeta.client.spi.VegetaServiceLoader;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +65,7 @@ public enum RejectedTypeEnum {
     }
 
     static {
-        DynamicTpServiceLoader.register(CustomRejectedExecutionHandler.class);
+        VegetaServiceLoader.register(CustomRejectedExecutionHandler.class);
     }
 
     public static RejectedExecutionHandler createPolicy(int type) {
@@ -76,18 +75,17 @@ public enum RejectedTypeEnum {
                 .findFirst();
 
         // 使用 SPI 匹配拒绝策略
-        RejectedExecutionHandler resultRejected = rejectedTypeEnum.orElseGet(() -> {
-            Collection<CustomRejectedExecutionHandler> customRejectedExecutionHandlers = DynamicTpServiceLoader
+        return rejectedTypeEnum.orElseGet(() -> {
+            // spi 获取CustomRejectedExecutionHandler 所有实现类
+            Collection<CustomRejectedExecutionHandler> customRejectedExecutionHandlers = VegetaServiceLoader
                     .getSingletonServiceInstances(CustomRejectedExecutionHandler.class);
             Optional<RejectedExecutionHandler> customRejected = customRejectedExecutionHandlers.stream()
                     .filter(each -> Objects.equals(type, each.getType()))
-                    .map(each -> each.generateRejected())
+                    .map(CustomRejectedExecutionHandler::generateRejected)
                     .findFirst();
 
             return customRejected.orElse(ABORT_POLICY.rejectedHandler);
         });
-
-        return resultRejected;
     }
 
     public static String getRejectedNameByType(int type) {

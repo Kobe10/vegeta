@@ -1,6 +1,7 @@
 package com.vegeta.client.tool.thread;
 
-import com.vegeta.client.spi.DynamicTpServiceLoader;
+import com.vegeta.client.spi.CustomBlockingQueue;
+import com.vegeta.client.spi.VegetaServiceLoader;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,10 +10,10 @@ import java.util.Optional;
 import java.util.concurrent.*;
 
 /**
- * Queue type enum.
+ * 队列类型枚举   线程池队列
  *
- * @author chen.ma
- * @date 2021/6/25 12:30
+ * @Author fuzhiqiang
+ * @Date 2021/12/4
  */
 public enum QueueTypeEnum {
 
@@ -60,10 +61,20 @@ public enum QueueTypeEnum {
         this.name = name;
     }
 
+    // 启动初始化
     static {
-        DynamicTpServiceLoader.register(CustomBlockingQueue.class);
+        VegetaServiceLoader.register(CustomBlockingQueue.class);
     }
 
+    /**
+     * 根据队列类型创建阻塞队列  (spi)
+     *
+     * @param type     队列类型
+     * @param capacity 容量
+     * @return java.util.concurrent.BlockingQueue
+     * @Author fuzhiqiang
+     * @Date 2021/12/4
+     */
     public static BlockingQueue createBlockingQueue(int type, Integer capacity) {
         BlockingQueue blockingQueue = null;
         if (Objects.equals(type, ARRAY_BLOCKING_QUEUE.type)) {
@@ -81,15 +92,14 @@ public enum QueueTypeEnum {
         } else if (Objects.equals(type, RESIZABLE_LINKED_BLOCKING_QUEUE.type)) {
             blockingQueue = new ResizableCapacityLinkedBlockIngQueue(capacity);
         }
-
-        Collection<CustomBlockingQueue> customBlockingQueues = DynamicTpServiceLoader
+        // 获取当前的自定义队列的实现类  (留存当前的实现类并创建对应的队列信息)
+        Collection<CustomBlockingQueue> customBlockingQueues = VegetaServiceLoader
                 .getSingletonServiceInstances(CustomBlockingQueue.class);
         blockingQueue = Optional.ofNullable(blockingQueue).orElseGet(() -> customBlockingQueues.stream()
                 .filter(each -> Objects.equals(type, each.getType()))
-                .map(each -> each.generateBlockingQueue())
+                .map(CustomBlockingQueue::generateBlockingQueue)
                 .findFirst()
                 .orElse(new LinkedBlockingQueue(capacity)));
-
         return blockingQueue;
     }
 

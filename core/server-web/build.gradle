@@ -3,6 +3,6 @@
  */
 
 dependencies {
-    compile project(":core:config-server")
-    compile project(":core:meta-server")
+    api project(":core:config-server")
+    api project(":core:meta-server")
 }

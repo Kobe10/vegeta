@@ -1,8 +1,0 @@
-dependencies {
-//    compile project(":start:server-web")
-    compile 'org.springframework.boot:spring-boot-starter-test'
-    compile project(":common:log-util")
-//    compile project(":start:datasource-mybatis")
-
-    compile 'org.springframework.boot:spring-boot-starter-web'
-}

@@ -9,5 +9,9 @@ dependencies {
     api("org.projectlombok:lombok")
     api("org.apache.commons:commons-lang3")
     api("org.slf4j:slf4j-api")
+    api 'com.alibaba:fastjson:1.2.72'
+    api 'com.alibaba:fastjson:1.2.72'
+    api("com.google.guava:guava")
+
     implementation("com.squareup.okhttp3:logging-interceptor")
 }

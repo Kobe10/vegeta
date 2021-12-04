@@ -203,7 +203,6 @@ public class ThreadPoolBuilder implements Builder<ThreadPoolExecutor> {
     /**
      * 构建
      *
-     * @return
      */
     @Override
     public ThreadPoolExecutor build() {
@@ -226,7 +225,6 @@ public class ThreadPoolBuilder implements Builder<ThreadPoolExecutor> {
      * 构建普通线程池
      *
      * @param builder
-     * @return
      */
     private static ThreadPoolExecutor buildPool(ThreadPoolBuilder builder) {
         return AbstractBuildThreadPoolTemplate.buildPool(buildInitParam(builder));
@@ -236,7 +234,6 @@ public class ThreadPoolBuilder implements Builder<ThreadPoolExecutor> {
      * 构建快速消费线程池
      *
      * @param builder
-     * @return
      */
     private static ThreadPoolExecutor buildFastPool(ThreadPoolBuilder builder) {
         return AbstractBuildThreadPoolTemplate.buildFastPool(buildInitParam(builder));
@@ -246,7 +243,6 @@ public class ThreadPoolBuilder implements Builder<ThreadPoolExecutor> {
      * 构建动态线程池
      *
      * @param builder
-     * @return
      */
     private static ThreadPoolExecutor buildDynamicPool(ThreadPoolBuilder builder) {
         return AbstractBuildThreadPoolTemplate.buildDynamicPool(buildInitParam(builder));
@@ -256,7 +252,6 @@ public class ThreadPoolBuilder implements Builder<ThreadPoolExecutor> {
      * 构建初始化参数
      *
      * @param builder
-     * @return
      */
     private static AbstractBuildThreadPoolTemplate.ThreadPoolInitParam buildInitParam(ThreadPoolBuilder builder) {
         Assert.notEmpty(builder.threadNamePrefix, "The thread name prefix cannot be empty or an empty string.");
@@ -283,8 +278,6 @@ public class ThreadPoolBuilder implements Builder<ThreadPoolExecutor> {
             }
             initParam.setWorkQueue(builder.workQueue);
         }
-
         return initParam;
     }
-
 }

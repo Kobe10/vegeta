@@ -63,7 +63,7 @@ public class ClientWorker implements Closeable {
 
     @SuppressWarnings("all")
     public ClientWorker(HttpAgent httpAgent, String identification) {
-        // 1、初始化agent
+        // 1、初始化agent-- ServerHttpAgent (初始化 线程池基本信息 监听器基本信息 http调用基本信息)
         this.agent = httpAgent;
         this.identification = identification;
         this.timeout = Constants.CONFIG_LONG_POLL_TIMEOUT;
@@ -83,7 +83,7 @@ public class ClientWorker implements Closeable {
         // todo 登录校验权限 (服务端登录校验)
         // login
 
-        // 延迟任务  校验配置更新
+        // 延迟任务  校验配置更新  定时10s一次
         this.executor.scheduleWithFixedDelay(() -> {
             try {
                 checkConfigInfo();
@@ -94,6 +94,7 @@ public class ClientWorker implements Closeable {
     }
 
     public void checkConfigInfo() {
+        log.info("【check config info start! 】");
         int listenerSize = cacheMap.get().size();
         double perTaskConfigSize = 3000D;
         // 监听组的任务数量
@@ -319,8 +320,9 @@ public class ClientWorker implements Closeable {
         return updateList;
     }
 
-    public void addTenantListeners(String namespace, String itemId, String tpId, List<? extends Listener> listeners) {
-        CacheData cacheData = addCacheDataIfAbsent(namespace, itemId, tpId);
+
+    public void addTenantListeners(String namespace, String appId, String tpId, List<? extends Listener> listeners) {
+        CacheData cacheData = addCacheDataIfAbsent(namespace, appId, tpId);
         for (Listener listener : listeners) {
             cacheData.addListener(listener);
         }
