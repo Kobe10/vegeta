@@ -1,0 +1,24 @@
+
+
+spring:
+  datasource:
+    url: jdbc:mysql://10.108.160.143:3340/xiaoban?serverTimezone=Asia/Shanghai
+    username: xiaoban_dev
+    password: LCW6+kd5f
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      initial-size: 10
+      max-wait: 200
+      max-idle: 100
+      mac-active: 100
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      validation-query: select 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 600000
+      num-tests-per-eviction-run: 10
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

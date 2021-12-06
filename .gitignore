@@ -53,6 +53,9 @@ build
 /rebel.xml
 /base-start/src/main/resources/application-dev.yml
 
+application-mybatis-local.yaml
+
 
 # local 配置文件
 application-data-local.yaml
+/core/datasource-mybatis/src/main/resources/application-mybatis-local.yaml
