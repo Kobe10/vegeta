@@ -27,9 +27,11 @@ public class Constants {
 
     public static final String TP_ID = "tpId";
 
-    public static final String ITEM_ID = "itemId";
+    public static final String APP_ID = "appId";
 
     public static final String NAMESPACE = "namespace";
+
+    public static final String GROUP_KEY = "groupKey";
 
     public static final String DEFAULT_NAMESPACE_ID = "public";
 

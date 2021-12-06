@@ -213,9 +213,9 @@ public class ClientWorker implements Closeable {
     }
 
     public List<String> checkUpdateTpIds(String probeUpdateString, boolean isInitializingCacheList) {
-        Map<String, String> params = new HashMap(2);
+        Map<String, String> params = new HashMap<>(2);
         params.put(Constants.PROBE_MODIFY_REQUEST, probeUpdateString);
-        Map<String, String> headers = new HashMap(2);
+        Map<String, String> headers = new HashMap<>(2);
         headers.put(Constants.LONG_PULLING_TIMEOUT, "" + timeout);
 
         // 确认客户端身份, 修改线程池配置时可单独修改

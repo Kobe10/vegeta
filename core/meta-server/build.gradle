@@ -3,7 +3,5 @@
  */
 
 dependencies {
-    api project(":common:core-common")
-    api project(":common:log-util")
-    api project(":core:datasource-mybatis")
+    api project(":core:config-server")
 }

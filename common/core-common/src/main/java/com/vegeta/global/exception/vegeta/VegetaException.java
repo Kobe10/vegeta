@@ -1,4 +1,4 @@
-package com.vegeta.api.exception;
+package com.vegeta.global.exception.vegeta;
 
 
 import com.vegeta.global.consts.Constants;

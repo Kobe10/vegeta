@@ -102,7 +102,7 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
         String tpId = dynamicThreadPoolWrap.getTpId();
         Map<String, String> queryStrMap = new HashMap(3);
         queryStrMap.put(Constants.TP_ID, tpId);
-        queryStrMap.put(Constants.ITEM_ID, properties.getAppId());
+        queryStrMap.put(Constants.APP_ID, properties.getAppId());
         queryStrMap.put(Constants.NAMESPACE, properties.getNamespace());
 
         Result result;

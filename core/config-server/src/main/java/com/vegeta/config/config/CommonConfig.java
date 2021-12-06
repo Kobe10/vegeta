@@ -1,4 +1,4 @@
-package com.vegeta.datasource.config;
+package com.vegeta.config.config;
 
 import com.vegeta.global.config.ApplicationContextHolder;
 import org.springframework.context.annotation.Bean;
@@ -7,15 +7,13 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Common config.
  *
- * @author chen.ma
- * @date 2021/7/19 21:03
+ * @Author fuzhiqiang
+ * @Date 2021/12/6
  */
 @Configuration
 public class CommonConfig {
-
     @Bean
     public ApplicationContextHolder simpleApplicationContextHolder() {
         return new ApplicationContextHolder();
     }
-
 }
