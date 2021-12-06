@@ -94,7 +94,7 @@ public class ClientWorker implements Closeable {
     }
 
     public void checkConfigInfo() {
-        log.info("【check config info start! 】");
+//        log.info("【check config info start! 】");
         int listenerSize = cacheMap.get().size();
         double perTaskConfigSize = 3000D;
         // 监听组的任务数量

@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 线程池配置示例
@@ -53,6 +55,13 @@ public class CommonThreadPoolConfig {
      */
     private final String THREAD_NAME_PREFIX = "jobScheduler";
 
+    /**
+     * 兼容任务型线程池创建方式
+     *
+     * @return java.util.concurrent.ThreadPoolExecutor
+     * @Author fuzhiqiang
+     * @Date 2021/12/6
+     */
     @Bean
     @DynamicThreadPool
     public ThreadPoolTaskExecutor jobScheduler() {
@@ -69,10 +78,17 @@ public class CommonThreadPoolConfig {
         return threadPoolTaskExecutor;
     }
 
+    /**
+     * 兼容已经存在的线程池
+     *
+     * @return java.util.concurrent.ThreadPoolExecutor
+     * @Author fuzhiqiang
+     * @Date 2021/12/6
+     */
     @Bean
     @DynamicThreadPool
     public ThreadPoolExecutor jobScheduler1() {
-        ThreadPoolExecutor threadPoolTaskExecutor = new ThreadPoolExecutor(1,1,1,null,null);
+        ThreadPoolExecutor threadPoolTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.MILLISECONDS, new LinkedBlockingQueue(10));
         threadPoolTaskExecutor.setCorePoolSize(CORE_POOL_SIZE);
 //        threadPoolTaskExecutor.seta(ALLOW_CORE_THREAD_TIME_OUT);
 //        threadPoolTaskExecutor.setQueueCapacity(QUEUE_CAPACITY);
