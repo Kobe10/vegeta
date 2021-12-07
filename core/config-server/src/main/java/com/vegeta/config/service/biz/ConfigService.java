@@ -1,6 +1,7 @@
 package com.vegeta.config.service.biz;
 
 import cn.hippo4j.config.model.ConfigAllInfo;
+import com.vegeta.datasource.model.ConfigAllInfo;
 
 /**
  * Config service.
@@ -19,14 +20,6 @@ public interface ConfigService {
      * @return all config
      */
     ConfigAllInfo findConfigAllInfo(String tpId, String itemId, String tenantId);
-
-    /**
-     * Find config recent info.
-     *
-     * @param params
-     * @return
-     */
-    ConfigAllInfo findConfigRecentInfo(String... params);
 
     /**
      * Insert or update.

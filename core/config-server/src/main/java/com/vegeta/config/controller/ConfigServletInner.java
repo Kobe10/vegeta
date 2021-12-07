@@ -1,7 +1,6 @@
 package com.vegeta.config.controller;
 
 import com.vegeta.config.service.LongPollingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -11,13 +10,11 @@ import java.util.Map;
 
 /**
  * Config servlet inner.
- *
- * @author chen.ma
- * @date 2021/6/22 23:13
  */
 @Service
 public class ConfigServletInner {
 
+    // 初始化
     @Resource
     private LongPollingService longPollingService;
 
@@ -32,8 +29,7 @@ public class ConfigServletInner {
      * @Author fuzhiqiang
      * @Date 2021/12/6
      */
-    public String doPollingConfig(HttpServletRequest request, HttpServletResponse response,
-                                  Map<String, String> clientMd5Map, int probeRequestSize) {
+    public String doPollingConfig(HttpServletRequest request, HttpServletResponse response, Map<String, String> clientMd5Map, int probeRequestSize) {
         // Long polling.
         if (LongPollingService.isSupportLongPolling(request)) {
             longPollingService.addLongPollingClient(request, response, clientMd5Map, probeRequestSize);
@@ -41,5 +37,4 @@ public class ConfigServletInner {
         }
         return HttpServletResponse.SC_OK + "";
     }
-
 }

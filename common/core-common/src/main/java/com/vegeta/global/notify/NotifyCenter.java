@@ -21,11 +21,10 @@ import com.alibaba.nacos.common.JustForTest;
 import com.alibaba.nacos.common.notify.listener.SmartSubscriber;
 import com.alibaba.nacos.common.notify.listener.Subscriber;
 import com.alibaba.nacos.common.spi.NacosServiceLoader;
-import com.alibaba.nacos.common.utils.ClassUtils;
 import com.alibaba.nacos.common.utils.MapUtil;
 import com.alibaba.nacos.common.utils.ThreadUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.vegeta.global.util.ClassUtils;
+import com.vegeta.global.util.MapUtil;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -330,9 +329,11 @@ public class NotifyCenter {
      */
     public static EventPublisher registerToPublisher(final Class<? extends Event> eventType, final EventPublisherFactory factory, final int queueMaxSize) {
         if (ClassUtils.isAssignableFrom(SlowEvent.class, eventType)) {
+            // 返回统一的事件共享发布器
             return INSTANCE.sharePublisher;
         }
 
+        // 获取事件类的名字    getCanonicalName()返回的是更容易理解的表示
         final String topic = ClassUtils.getCanonicalName(eventType);
         synchronized (NotifyCenter.class) {
             // MapUtils.computeIfAbsent is a unsafe method.

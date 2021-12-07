@@ -1,5 +1,6 @@
 package com.vegeta.config.controller;
 
+import com.vegeta.config.service.biz.ConfigService;
 import com.vegeta.config.toolkit.Md5ConfigUtil;
 import com.vegeta.global.consts.Constants;
 import com.vegeta.global.http.result.base.Result;
@@ -30,7 +31,7 @@ public class ConfigController {
     private final ConfigServletInner configServletInner;
 
     @GetMapping
-    public Result<ConfigInfoBase> detailConfigInfo(@RequestParam("tpId") String tpId, @RequestParam("itemId") String itemId, @RequestParam("namespace") String namespace, @RequestParam(value = "instanceId", required = false) String instanceId) {
+    foBase> detailConfigInfo(@RequestParam("tpId") String tpId, @RequestParam("itemId") String itemId, @RequestParam("namespace") String namespace, @RequestParam(value = "instanceId", required = false) String instanceId) {
         ConfigAllInfo configAllInfo = configService.findConfigRecentInfo(tpId, itemId, namespace, instanceId);
         return Results.success(configAllInfo);
     }
@@ -70,7 +71,7 @@ public class ConfigController {
             throw new IllegalArgumentException("invalid probeModify");
         }
 
-        // do long-polling
+        // 做长轮训
         configServletInner.doPollingConfig(request, response, clientMd5Map, probeModify.length());
     }
 

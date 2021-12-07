@@ -1,7 +1,8 @@
 package com.vegeta.config.toolkit;
 
-
 import com.google.common.collect.Lists;
+import com.vegeta.config.service.ConfigCacheService;
+import com.vegeta.datasource.model.ConfigAllInfo;
 import com.vegeta.global.util.GroupKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,10 +19,9 @@ import static com.vegeta.global.consts.Constants.WORD_SEPARATOR;
 
 
 /**
- * Md5 config util.
- *
- * @author chen.ma
- * @date 2021/6/21 18:32
+ * @description: Md5 config util.
+ * @author: fuzhiqiang
+ * @date: 2021/12/7
  */
 public class Md5ConfigUtil {
 
@@ -32,11 +32,10 @@ public class Md5ConfigUtil {
     /**
      * Get thread pool content md5
      *
-     * @param config
-     * @return
+     * @param config 配置信息
      */
     public static String getTpContentMd5(ConfigAllInfo config) {
-        return Md5Util.getTpContentMd5(config);
+        return Md5ConfigUtil.getTpContentMd5(config);
     }
 
     /**

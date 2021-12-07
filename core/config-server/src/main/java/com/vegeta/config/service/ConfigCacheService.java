@@ -14,6 +14,11 @@ import com.alibaba.nacos.config.server.utils.PropertyUtil;
 import com.google.common.collect.Maps;
 import com.vegeta.config.model.CacheItem;
 import com.vegeta.config.service.biz.ConfigService;
+import com.vegeta.config.toolkit.Md5ConfigUtil;
+import com.vegeta.datasource.model.ConfigAllInfo;
+import com.vegeta.global.config.ApplicationContextHolder;
+import com.vegeta.global.consts.Constants;
+import com.vegeta.global.util.MD5Utils;
 import com.vegeta.global.util.MapUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +42,9 @@ public class ConfigCacheService {
     private static ConfigService configService = null;
 
     /**
-     * TODO: 数据结构、客户端停机时 remove 操作待重构
-     * <p>
-     * key: message-produce+dynamic-threadpool-example+prescription+192.168.20.227:8088
-     * val:
-     * key: 192.168.20.227:8088
-     * val:  {@link CacheItem}
+     * groupKey -> cacheItem.
      */
-    private static final ConcurrentHashMap<String, Map<String, CacheItem>> CACHE = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<String, CacheItem> CACHE = new ConcurrentHashMap<>();
 
     public static boolean isUpdateData(String groupKey, String md5, String ip) {
         String contentMd5 = ConfigCacheService.getContentMd5IsNullPut(groupKey, ip);
@@ -80,19 +80,26 @@ public class ConfigCacheService {
         return (cacheItem != null) ? cacheItem.md5 : Constants.NULL;
     }
 
+    /**
+     * @param groupKey key
+     * @description: 获取md5 配置信息
+     * @author: fuzhiqiang
+     * @date: 2021/12/7
+     * @return: java.lang.String
+     */
     public static String getContentMd5(String groupKey) {
         if (configService == null) {
             configService = ApplicationContextHolder.getBean(ConfigService.class);
         }
 
-        String[] params = groupKey.split("\\+");
-        ConfigAllInfo config = configService.findConfigRecentInfo(params);
-        if (config == null || StringUtils.isEmpty(config.getTpId())) {
-            String errorMessage = String.format("config is null. tpId :: %s, itemId :: %s, tenantId :: %s", params[0], params[1], params[2]);
+        String[] split = groupKey.split("\\+");
+        ConfigAllInfo config = configService.findConfigAllInfo(split[0], split[1], split[2]);
+        if (Objects.isNull(config) || StringUtils.isEmpty(config.getThreadPoolId())) {
+            String errorMessage = String.format("config is null. tpId :: %s, itemId :: %s, tenantId :: %s", split[0], split[1], split[2]);
             throw new RuntimeException(errorMessage);
         }
 
-        return Md5Util.getTpContentMd5(config);
+        return MD5Util.getTpContentMd5(config);
     }
 
     public static void updateMd5(String groupKey, String ip, String md5) {
@@ -141,6 +148,17 @@ public class ConfigCacheService {
             Map<String, CacheItem> removeCacheItem = CACHE.remove(cacheMapKey);
             log.info("Remove invalidated config cache. config info :: {}", JSON.toJSONString(removeCacheItem));
         }
+    }
+
+    /**
+     * @description: Get and return beta md5 value from cache. Empty string represents no data.
+     * @return:
+     * @author: fuzhiqiang
+     * @date:
+     */
+    public static String getContentBetaMd5(String groupKey) {
+        CacheItem item = CACHE.get(groupKey);
+        return (null != item) ? item.md54Beta : Constants.NULL;
     }
 }
 

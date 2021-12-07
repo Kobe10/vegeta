@@ -1,23 +1,28 @@
 package com.vegeta.config.service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vegeta.config.model.event.LocalDataChangeEvent;
-import com.vegeta.global.notify.NotifyCenter;
 import com.vegeta.config.toolkit.ConfigExecutor;
 import com.vegeta.config.toolkit.Md5ConfigUtil;
 import com.vegeta.config.toolkit.RequestUtil;
+import com.vegeta.global.consts.Constants;
 import com.vegeta.global.http.result.base.Results;
+import com.vegeta.global.notify.Event;
+import com.vegeta.global.notify.NotifyCenter;
+import com.vegeta.global.notify.listener.Subscriber;
 import com.vegeta.global.util.CollectionUtils;
+import com.vegeta.global.util.MapUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.reflection.ExceptionUtil;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -53,18 +58,27 @@ public class LongPollingService {
     private Map<String, Long> retainIps = Maps.newConcurrentMap();
 
 
-    @SuppressWarnings("PMD.ThreadPoolCreationRule")
+    /**
+     * @description: 初始化所有订阅的客户端，启动统计客户端数量定时任务
+     * @return:
+     * @author: fuzhiqiang
+     * @date:
+     */
+    @SuppressWarnings("all")
     public LongPollingService() {
         allSubs = new ConcurrentLinkedQueue<>();
 
+        // 统计客户端订阅数量  10s一次
         ConfigExecutor.scheduleLongPolling(new StatTask(), 0L, 10L, TimeUnit.SECONDS);
 
         // Register LocalDataChangeEvent to NotifyCenter.
+        // 注册一个 LocalDataChangeEvent 的发布器
         NotifyCenter.registerToPublisher(LocalDataChangeEvent.class, NotifyCenter.ringBufferSize);
 
         // Register A Subscriber to subscribe LocalDataChangeEvent.
+        // 注册一个订阅者去订阅 LocalDataChangeEvent 事件
         NotifyCenter.registerSubscriber(new Subscriber() {
-
+            // 监听事件回调
             @Override
             public void onEvent(Event event) {
                 if (isFixedPolling()) {
@@ -72,18 +86,60 @@ public class LongPollingService {
                 } else {
                     if (event instanceof LocalDataChangeEvent) {
                         LocalDataChangeEvent evt = (LocalDataChangeEvent) event;
-                        ConfigExecutor.executeLongPolling(new DataChangeTask(evt.groupKey, evt.isBeta, evt.betaIps));
+                        ConfigExecutor.executeLongPolling(new DataChangeTask(evt.groupKey, evt.betaIps));
                     }
                 }
             }
 
+            // 订阅的事件类型
             @Override
             public Class<? extends Event> subscribeType() {
                 return LocalDataChangeEvent.class;
             }
         });
-
     }
+
+    class DataChangeTask implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                // 遍历所有的订阅者
+                for (Iterator<ClientLongPolling> iter = allSubs.iterator(); iter.hasNext(); ) {
+                    ClientLongPolling clientSub = iter.next();
+
+                    String identity = groupKey + Constants.GROUP_KEY_DELIMITER + identify;
+                    List<String> parseMapForFilter = Lists.newArrayList(identity);
+                    if (StringUtils.isBlank(identify)) {
+                        parseMapForFilter = MapUtil.parseMapForFilter(clientSub.clientMd5Map, groupKey);
+                    }
+
+                    parseMapForFilter.forEach(each -> {
+                        if (clientSub.clientMd5Map.containsKey(each)) {
+                            getRetainIps().put(clientSub.ip, System.currentTimeMillis());
+                            ConfigCacheService.updateMd5(each, clientSub.ip, ConfigCacheService.getContentMd5(groupKey));
+                            iter.remove();
+                            clientSub.sendResponse(Collections.singletonList(groupKey));
+                        }
+                    });
+                }
+            } catch (Throwable t) {
+                log.error("【Data change error: ", t);
+            }
+        }
+
+        DataChangeTask(String groupKey, String identify) {
+            this.groupKey = groupKey;
+            this.identify = identify;
+        }
+
+        final String groupKey;
+
+        final long changeTime = System.currentTimeMillis();
+
+        final String identify;
+    }
+
 
     /**
      * 状态任务  10秒一次  统计订阅的客户端总数
@@ -146,12 +202,10 @@ public class LongPollingService {
             List<String> changedGroups = Md5ConfigUtil.compareMd5(request, clientMd5Map);
             if (changedGroups.size() > 0) {
                 generateResponse(response, changedGroups);
-                log.info("{}|{}|{}|{}|{}|{}|{}", System.currentTimeMillis() - start, "instant",
-                        RequestUtil.getRemoteIp(request), "polling", clientMd5Map.size(), probeRequestSize, changedGroups.size());
+                log.info("{}|{}|{}|{}|{}|{}|{}", System.currentTimeMillis() - start, "instant", RequestUtil.getRemoteIp(request), "polling", clientMd5Map.size(), probeRequestSize, changedGroups.size());
                 return;
             } else if (noHangUpFlag != null && noHangUpFlag.equalsIgnoreCase(TRUE_STR)) {
-                log.info("{}|{}|{}|{}|{}|{}|{}", System.currentTimeMillis() - start, "nohangup",
-                        RequestUtil.getRemoteIp(request), "polling", clientMd5Map.size(), probeRequestSize, changedGroups.size());
+                log.info("{}|{}|{}|{}|{}|{}|{}", System.currentTimeMillis() - start, "nohangup", RequestUtil.getRemoteIp(request), "polling", clientMd5Map.size(), probeRequestSize, changedGroups.size());
                 return;
             }
         }

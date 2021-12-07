@@ -16,14 +16,12 @@
 
 package com.vegeta.global.util;
 
+import com.google.common.collect.Lists;
 import com.vegeta.global.annation.NotThreadSafe;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
@@ -173,5 +171,42 @@ public class MapUtil {
      */
     public static <K, V> V removeKey(Map<K, V> map, K key, Predicate<V> removeJudge) {
         return map.computeIfPresent(key, (k, v) -> removeJudge.test(v) ? null : v);
+    }
+
+    /**
+     * 根据 Key 进行模糊匹配.
+     *
+     * @param sourceMap
+     * @param filters
+     * @return
+     */
+    public static List<String> parseMapForFilter(Map<String, ?> sourceMap, String filters) {
+        List<String> resultList = Lists.newArrayList();
+        if (org.springframework.util.CollectionUtils.isEmpty(sourceMap)) {
+            return resultList;
+        }
+
+        sourceMap.forEach((key, val) -> {
+            if (checkKey(key, filters)) {
+                resultList.add(key);
+            }
+        });
+
+        return resultList;
+    }
+
+    /**
+     * 匹配想要查询的字符.
+     *
+     * @param key
+     * @param filters
+     * @return
+     */
+    private static boolean checkKey(String key, String filters) {
+        if (key.contains(filters)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

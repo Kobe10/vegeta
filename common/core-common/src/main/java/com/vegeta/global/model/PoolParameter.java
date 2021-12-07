@@ -10,86 +10,61 @@ public interface PoolParameter {
 
     /**
      * tenantId
-     *
-     * @return
      */
     String getTenantId();
 
     /**
      * itemId
-     *
-     * @return
      */
     String getAppId();
 
     /**
      * tpId
-     *
-     * @return
      */
-    String getTpId();
+    String getThreadPoolId();
 
     /**
      * coreSize
-     *
-     * @return
      */
     Integer getCoreSize();
 
     /**
      * maxSize
-     *
-     * @return
      */
     Integer getMaxSize();
 
     /**
      * queueType
-     *
-     * @return
      */
     Integer getQueueType();
 
     /**
      * capacity
-     *
-     * @return
      */
     Integer getCapacity();
 
     /**
      * keepAliveTime
-     *
-     * @return
      */
     Integer getKeepAliveTime();
 
     /**
      * rejectedType
-     *
-     * @return
      */
     Integer getRejectedType();
 
     /**
      * isAlarm
-     *
-     * @return
      */
     Integer getIsAlarm();
 
     /**
      * capacityAlarm
-     *
-     * @return
      */
     Integer getCapacityAlarm();
 
     /**
      * livenessAlarm
-     *
-     * @return
      */
     Integer getLivenessAlarm();
-
 }
