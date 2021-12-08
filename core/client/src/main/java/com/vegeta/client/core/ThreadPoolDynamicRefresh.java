@@ -34,7 +34,7 @@ public class ThreadPoolDynamicRefresh {
      * @Date 2021/12/2
      */
     public static void refreshDynamicPool(PoolParameterInfo parameter) {
-        String threadPoolId = parameter.getTpId();
+        String threadPoolId = parameter.getThreadPoolId();
         ThreadPoolExecutor executor = ThreadPoolManager.getExecutorService(threadPoolId).getExecutor();
         // 核心线程数
         int originalCoreSize = executor.getCorePoolSize();

@@ -17,7 +17,7 @@ public class ContentUtil {
         PoolParameterInfo poolInfo = new PoolParameterInfo();
         poolInfo.setTenantId(parameter.getTenantId())
                 .setAppId(parameter.getAppId())
-                .setTpId(parameter.getThreadPoolId())
+                .setThreadPoolId(parameter.getThreadPoolId())
                 .setCoreSize(parameter.getCoreSize())
                 .setMaxSize(parameter.getMaxSize())
                 .setQueueType(parameter.getQueueType())

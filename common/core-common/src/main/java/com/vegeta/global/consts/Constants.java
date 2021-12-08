@@ -52,6 +52,8 @@ public class Constants {
     public static final String BASE_PATH = "/v1/cs";
 
     public static final String CONFIG_CONTROLLER_PATH = BASE_PATH + "/configs";
+    // 获取具体配置信息
+    public static final String CONFIG_CONTROLLER_PATH = CONFIG_CONTROLLER_PATH + "/detailConfigInfo";
 
     public static final String LISTENER_PATH = CONFIG_CONTROLLER_PATH + "/listener";
 

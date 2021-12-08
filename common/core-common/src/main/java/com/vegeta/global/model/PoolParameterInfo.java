@@ -30,7 +30,7 @@ public class PoolParameterInfo implements PoolParameter, Serializable {
     /**
      * tpId
      */
-    private String tpId;
+    private String threadPoolId;
 
     /**
      * content
