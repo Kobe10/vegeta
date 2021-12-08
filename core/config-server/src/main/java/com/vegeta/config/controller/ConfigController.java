@@ -1,10 +1,14 @@
 package com.vegeta.config.controller;
 
+import com.vegeta.config.service.ConfigCacheService;
 import com.vegeta.config.service.biz.ConfigService;
 import com.vegeta.config.toolkit.Md5ConfigUtil;
+import com.vegeta.datasource.model.ConfigAllInfo;
+import com.vegeta.datasource.model.ThreadConfig;
 import com.vegeta.global.consts.Constants;
 import com.vegeta.global.http.result.base.Result;
 import com.vegeta.global.http.result.base.Results;
+import com.vegeta.global.util.ParamUtils;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -30,13 +34,18 @@ public class ConfigController {
 
     private final ConfigServletInner configServletInner;
 
-    @GetMapping
-    foBase> detailConfigInfo(@RequestParam("tpId") String tpId, @RequestParam("itemId") String itemId, @RequestParam("namespace") String namespace, @RequestParam(value = "instanceId", required = false) String instanceId) {
-        ConfigAllInfo configAllInfo = configService.findConfigRecentInfo(tpId, itemId, namespace, instanceId);
+    @GetMapping(value = "/detailConfigInfo")
+    public Result<ThreadConfig> detailConfigInfo(@RequestParam("tpId") String tpId, @RequestParam("appId") String appId,
+                                                 @RequestParam("namespace") String namespace,
+                                                 @RequestParam(value = "instanceId", required = false) String instanceId) {
+        // 校验租户id
+        ParamUtils.checkTenant(tpId);
+        // 获取配置信息
+        ConfigAllInfo configAllInfo = configService.findConfigRecentInfo(tpId, appId, namespace, instanceId);
         return Results.success(configAllInfo);
     }
 
-    @PostMapping
+    @PostMapping(value = "/publishConfig")
     public Result<Boolean> publishConfig(@RequestParam(value = "identify", required = false) String identify, @RequestBody ConfigAllInfo config) {
         configService.insertOrUpdate(identify, config);
         return Results.success(true);

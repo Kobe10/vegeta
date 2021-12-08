@@ -17,7 +17,7 @@ public class ContentUtil {
         PoolParameterInfo poolInfo = new PoolParameterInfo();
         poolInfo.setTenantId(parameter.getTenantId())
                 .setAppId(parameter.getAppId())
-                .setTpId(parameter.getTpId())
+                .setTpId(parameter.getThreadPoolId())
                 .setCoreSize(parameter.getCoreSize())
                 .setMaxSize(parameter.getMaxSize())
                 .setQueueType(parameter.getQueueType())
@@ -31,7 +31,7 @@ public class ContentUtil {
     }
 
     public static String getGroupKey(PoolParameter parameter) {
-        return parameter.getTpId() +
+        return parameter.getThreadPoolId() +
                 Constants.GROUP_KEY_DELIMITER +
                 parameter.getAppId() +
                 Constants.GROUP_KEY_DELIMITER +

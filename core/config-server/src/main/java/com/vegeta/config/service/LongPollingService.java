@@ -16,7 +16,6 @@ import com.vegeta.global.util.CollectionUtils;
 import com.vegeta.global.util.MapUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.reflection.ExceptionUtil;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.AsyncContext;
@@ -59,10 +58,10 @@ public class LongPollingService {
 
 
     /**
-     * @description: 初始化所有订阅的客户端，启动统计客户端数量定时任务
-     * @return:
-     * @author: fuzhiqiang
-     * @date:
+     * 初始化所有订阅的客户端，启动统计客户端数量定时任务
+     *
+     * @Author fuzhiqiang
+     * @Date 2021/12/8
      */
     @SuppressWarnings("all")
     public LongPollingService() {
@@ -77,6 +76,7 @@ public class LongPollingService {
 
         // Register A Subscriber to subscribe LocalDataChangeEvent.
         // 注册一个订阅者去订阅 LocalDataChangeEvent 事件
+        // (收到LocalDataChangeEvent 事件， 都会遍历所有的客户端订阅者 校验配置是否发生变更，如果变更，写入response流中，同时移除客户端订阅者 )
         NotifyCenter.registerSubscriber(new Subscriber() {
             // 监听事件回调
             @Override
@@ -86,7 +86,7 @@ public class LongPollingService {
                 } else {
                     if (event instanceof LocalDataChangeEvent) {
                         LocalDataChangeEvent evt = (LocalDataChangeEvent) event;
-                        ConfigExecutor.executeLongPolling(new DataChangeTask(evt.groupKey, evt.betaIps));
+                        ConfigExecutor.executeLongPolling(new DataChangeTask(evt.groupKey, evt.identify));
                     }
                 }
             }
@@ -99,8 +99,13 @@ public class LongPollingService {
         });
     }
 
+    /**
+     * 监听数据变更任务
+     *
+     * @Author fuzhiqiang
+     * @Date 2021/12/8
+     */
     class DataChangeTask implements Runnable {
-
         @Override
         public void run() {
             try {
@@ -243,20 +248,17 @@ public class LongPollingService {
                                     sendResponse(null);
                                 }
                             } else {
-                                LogUtil.CLIENT_LOG.info("{}|{}|{}|{}|{}|{}", (System.currentTimeMillis() - createTime), "timeout", RequestUtil.getRemoteIp((HttpServletRequest) asyncContext.getRequest()), "polling", clientMd5Map.size(), probeRequestSize);
+                                log.info("{}|{}|{}|{}|{}|{}", (System.currentTimeMillis() - createTime), "timeout", RequestUtil.getRemoteIp((HttpServletRequest) asyncContext.getRequest()), "polling", clientMd5Map.size(), probeRequestSize);
                                 sendResponse(null);
                             }
                         } else {
-                            LogUtil.DEFAULT_LOG.warn("client subsciber's relations delete fail.");
+                            log.warn("client subsciber's relations delete fail.");
                         }
                     } catch (Throwable t) {
-                        LogUtil.DEFAULT_LOG.error("long polling error:" + t.getMessage(), t.getCause());
+                        log.error("long polling error:" + t.getMessage(), t.getCause());
                     }
-
                 }
-
             }, timeoutTime, TimeUnit.MILLISECONDS);
-
             allSubs.add(this);
         }
 

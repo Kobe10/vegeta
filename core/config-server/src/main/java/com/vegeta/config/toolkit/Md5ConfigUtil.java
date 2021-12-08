@@ -19,9 +19,11 @@ import static com.vegeta.global.consts.Constants.WORD_SEPARATOR;
 
 
 /**
- * @description: Md5 config util.
- * @author: fuzhiqiang
- * @date: 2021/12/7
+ * Md5 config util.
+ *
+ * @Author fuzhiqiang
+ * @Date 2021/12/8
+ * @return
  */
 public class Md5ConfigUtil {
 

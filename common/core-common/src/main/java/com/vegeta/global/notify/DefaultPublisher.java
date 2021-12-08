@@ -1,19 +1,3 @@
-/*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.vegeta.global.notify;
 
 import com.vegeta.global.notify.listener.Subscriber;
@@ -32,6 +16,7 @@ import static com.vegeta.global.notify.NotifyCenter.ringBufferSize;
 
 /**
  * The default event publisher implementation.
+ * 默认事件发布者实现。
  *
  * <p>Internally, use {@link ArrayBlockingQueue <Event/>} as a message staging queue.
  *
@@ -60,7 +45,7 @@ public class DefaultPublisher extends Thread implements EventPublisher {
     @Override
     public void init(Class<? extends Event> type, int bufferSize) {
         setDaemon(true);
-        setName("nacos.publisher-" + type.getName());
+        setName("vegeta.publisher-" + type.getName());
         this.eventType = type;
         this.queueMaxSize = bufferSize;
         this.queue = new ArrayBlockingQueue<>(bufferSize);
@@ -95,7 +80,6 @@ public class DefaultPublisher extends Thread implements EventPublisher {
 
     void openEventHandler() {
         try {
-
             // This variable is defined to resolve the problem which message overstock in the queue.
             int waitTimes = 60;
             // To ensure that messages are not lost, enable EventHandler when
@@ -138,6 +122,7 @@ public class DefaultPublisher extends Thread implements EventPublisher {
     @Override
     public boolean publish(Event event) {
         checkIsStart();
+        // 往阻塞队列 offer 事件
         boolean success = this.queue.offer(event);
         if (!success) {
             LOGGER.warn("Unable to plug in due to interruption, synchronize sending time, event : {}", event);
@@ -147,6 +132,11 @@ public class DefaultPublisher extends Thread implements EventPublisher {
         return true;
     }
 
+    /**
+     * 校验发布者 是否初始化
+     * @Author fuzhiqiang
+     * @Date  2021/12/8
+     */
     void checkIsStart() {
         if (!initialized) {
             throw new IllegalStateException("Publisher does not start");

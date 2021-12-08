@@ -1,35 +1,25 @@
 package com.vegeta.config.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.nacos.common.notify.NotifyCenter;
-import com.alibaba.nacos.common.utils.MD5Utils;
-import com.alibaba.nacos.config.server.constant.Constants;
-import com.alibaba.nacos.config.server.model.ConfigInfoBase;
-import com.alibaba.nacos.config.server.model.event.LocalDataChangeEvent;
-import com.alibaba.nacos.config.server.service.repository.PersistService;
-import com.alibaba.nacos.config.server.utils.DiskUtil;
-import com.alibaba.nacos.config.server.utils.GroupKey;
-import com.alibaba.nacos.config.server.utils.GroupKey2;
-import com.alibaba.nacos.config.server.utils.PropertyUtil;
 import com.google.common.collect.Maps;
 import com.vegeta.config.model.CacheItem;
+import com.vegeta.config.model.event.LocalDataChangeEvent;
 import com.vegeta.config.service.biz.ConfigService;
 import com.vegeta.config.toolkit.Md5ConfigUtil;
 import com.vegeta.datasource.model.ConfigAllInfo;
 import com.vegeta.global.config.ApplicationContextHolder;
 import com.vegeta.global.consts.Constants;
-import com.vegeta.global.util.MD5Utils;
+import com.vegeta.global.notify.NotifyCenter;
 import com.vegeta.global.util.MapUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.alibaba.nacos.config.server.utils.LogUtil.*;
 
 /**
  * Config service.
@@ -44,7 +34,7 @@ public class ConfigCacheService {
     /**
      * groupKey -> cacheItem.
      */
-    private static final ConcurrentHashMap<String, CacheItem> CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Map<String, CacheItem>> CACHE = new ConcurrentHashMap<>();
 
     public static boolean isUpdateData(String groupKey, String md5, String ip) {
         String contentMd5 = ConfigCacheService.getContentMd5IsNullPut(groupKey, ip);
@@ -54,15 +44,17 @@ public class ConfigCacheService {
     /**
      * Get Md5.
      *
-     * @param groupKey
-     * @param ip
-     * @return
+     * @param groupKey key
+     * @param ip       ip
+     * @return java.lang.String
+     * @Author fuzhiqiang
+     * @Date 2021/12/8
      */
     private synchronized static String getContentMd5IsNullPut(String groupKey, String ip) {
         Map<String, CacheItem> cacheItemMap = Optional.ofNullable(CACHE.get(groupKey)).orElse(Maps.newHashMap());
 
         CacheItem cacheItem = null;
-        if (CollUtil.isNotEmpty(cacheItemMap) && (cacheItem = cacheItemMap.get(ip)) != null) {
+        if (MapUtil.isNotEmpty(cacheItemMap) && (cacheItem = cacheItemMap.get(ip)) != null) {
             return cacheItem.md5;
         }
 
@@ -71,7 +63,7 @@ public class ConfigCacheService {
         }
         String[] params = groupKey.split("\\+");
         ConfigAllInfo config = configService.findConfigRecentInfo(params);
-        if (config != null && !org.springframework.util.StringUtils.isEmpty(config.getTpId())) {
+        if (Objects.nonNull(config) && StringUtils.isNotEmpty(config.getThreadPoolId())) {
             cacheItem = new CacheItem(groupKey, config);
             cacheItemMap.put(ip, cacheItem);
             CACHE.put(groupKey, cacheItemMap);
@@ -99,7 +91,7 @@ public class ConfigCacheService {
             throw new RuntimeException(errorMessage);
         }
 
-        return MD5Util.getTpContentMd5(config);
+        return Md5ConfigUtil.getTpContentMd5(config);
     }
 
     public static void updateMd5(String groupKey, String ip, String md5) {
@@ -148,17 +140,6 @@ public class ConfigCacheService {
             Map<String, CacheItem> removeCacheItem = CACHE.remove(cacheMapKey);
             log.info("Remove invalidated config cache. config info :: {}", JSON.toJSONString(removeCacheItem));
         }
-    }
-
-    /**
-     * @description: Get and return beta md5 value from cache. Empty string represents no data.
-     * @return:
-     * @author: fuzhiqiang
-     * @date:
-     */
-    public static String getContentBetaMd5(String groupKey) {
-        CacheItem item = CACHE.get(groupKey);
-        return (null != item) ? item.md54Beta : Constants.NULL;
     }
 }
 

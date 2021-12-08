@@ -5,7 +5,7 @@ import java.util.concurrent.Executor;
 
 /**
  * An abstract subscriber class for subscriber interface.
- *
+ * 订阅者接口的抽象订阅者类。
  * @author fuzhiqiang
  */
 @SuppressWarnings("all")

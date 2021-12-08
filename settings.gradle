@@ -4,37 +4,19 @@ include 'common'
 include('common:log-util')
 include('common:core-common')
 include('common:github-change-util')
-//project('common:log-util').projectDir = file('./common/log-util')
-//project('common:core-common').projectDir = file('./common/core-common')
-//project('common:github-change-util').projectDir = file('./common/github-change-util')
-//project('common').projectDir = file('./common')
-//
-//// 核心组件
+
+// 核心组件
 include('core:api')
 include('core:datasource-mybatis')
 include('core:server-web')
-include('core:meta-server')
+include('core:discovery')
 include('core:config-server')
 include('core:console-admin')
 include('core:console-ui')
 include('core:auth')
 include('core:client')
 include('core')
-//project(':core:api').projectDir = file('../core/api')
-//project(':core:datasource-mybatis').projectDir = file('../core/datasource-mybatis')
-//project(':core:server-web').projectDir = file('../core/server-web')
-//project(':core:meta-server').projectDir = file('../core/meta-server')
-//project(':core:config-server').projectDir = file('../core/config-server')
-//project(':core:console-admin').projectDir = file('../core/console-admin')
-//project(':core:console-ui').projectDir = file('../core/console-ui')
-//project(':core:auth').projectDir = file('../core/auth')
-//project(':core:client').projectDir = file('../core/client')
-//project(':core').projectDir = file('../core')
-
 
 // web demo 项目
 include('example')
 include('example:example-client')
-
-//project(':demo:demo-web').projectDir = file('../demo/demo-web')
-//project(':demo').projectDir = file('../demo')

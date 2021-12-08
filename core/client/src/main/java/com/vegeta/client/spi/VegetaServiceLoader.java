@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.vegeta.client.exception.ServiceLoaderInstantiationException;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**

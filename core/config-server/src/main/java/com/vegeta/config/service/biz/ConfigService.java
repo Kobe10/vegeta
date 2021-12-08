@@ -1,13 +1,12 @@
 package com.vegeta.config.service.biz;
 
-import cn.hippo4j.config.model.ConfigAllInfo;
 import com.vegeta.datasource.model.ConfigAllInfo;
 
 /**
  * Config service.
  *
- * @author chen.ma
- * @date 2021/6/20 15:18
+ * @Author fuzhiqiang
+ * @Date 2021/12/8
  */
 public interface ConfigService {
 
@@ -29,4 +28,13 @@ public interface ConfigService {
      */
     void insertOrUpdate(String identify, ConfigAllInfo configAllInfo);
 
+    /**
+     * Find config recent info.
+     *
+     * @param params 多参数
+     * @return com.vegeta.datasource.model.ConfigAllInfo
+     * @Author fuzhiqiang
+     * @Date 2021/12/8
+     */
+    ConfigAllInfo findConfigRecentInfo(String... params);
 }

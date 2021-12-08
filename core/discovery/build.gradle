@@ -1,9 +1,10 @@
 group 'com.vegeta'
-archivesBaseName = 'server-web'
-dependencies {
-    api project(":core:config-server")
-    api project(":core:discovery")
+archivesBaseName = 'discovery'
 
+dependencies {
+    api project(":common:core-common")
+    api project(":common:log-util")
+    api project(":core:datasource-mybatis")
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

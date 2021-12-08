@@ -1,30 +1,13 @@
-/*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.vegeta.global.notify;
 
-import com.alibaba.nacos.api.exception.runtime.NacosRuntimeException;
-import com.alibaba.nacos.common.JustForTest;
-import com.alibaba.nacos.common.notify.listener.SmartSubscriber;
-import com.alibaba.nacos.common.notify.listener.Subscriber;
-import com.alibaba.nacos.common.spi.NacosServiceLoader;
-import com.alibaba.nacos.common.utils.MapUtil;
-import com.alibaba.nacos.common.utils.ThreadUtils;
+import com.vegeta.global.exception.vegeta.VegetaRuntimeException;
+import com.vegeta.global.notify.listener.SmartSubscriber;
+import com.vegeta.global.notify.listener.Subscriber;
+import com.vegeta.global.spi.VegetaCommonServiceLoader;
 import com.vegeta.global.util.ClassUtils;
 import com.vegeta.global.util.MapUtil;
+import com.vegeta.global.util.ThreadUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,13 +16,15 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.alibaba.nacos.api.exception.NacosException.SERVER_ERROR;
+import static com.vegeta.global.exception.vegeta.VegetaException.SERVER_ERROR;
+
 
 /**
  * 统一事件通知中心
  *
  * @author fuzhiqiang
  */
+@Slf4j
 public class NotifyCenter {
 
     public static int ringBufferSize;
@@ -58,20 +43,22 @@ public class NotifyCenter {
 
     /**
      * Publisher management container.
+     * key --- event class name   value ---  EventPublisher 实现类
      */
     private final Map<String, EventPublisher> publisherMap = new ConcurrentHashMap<>(16);
 
     static {
         // Internal ArrayBlockingQueue buffer size. For applications with high write throughput,
         // this value needs to be increased appropriately. default value is 16384
-        String ringBufferSizeProperty = "nacos.core.notify.ring-buffer-size";
+        String ringBufferSizeProperty = "com.vegeta.notify.ring-buffer-size";
         ringBufferSize = Integer.getInteger(ringBufferSizeProperty, 16384);
 
         // The size of the public publisher's message staging queue buffer
-        String shareBufferSizeProperty = "nacos.core.notify.share-buffer-size";
+        // 公共发布者的消息暂存队列缓冲区的大小
+        String shareBufferSizeProperty = "com.vegeta.notify.share-buffer-size";
         shareBufferSize = Integer.getInteger(shareBufferSizeProperty, 1024);
 
-        final Collection<EventPublisher> publishers = NacosServiceLoader.load(EventPublisher.class);
+        final Collection<EventPublisher> publishers = VegetaCommonServiceLoader.load(EventPublisher.class);
         Iterator<EventPublisher> iterator = publishers.iterator();
 
         if (iterator.hasNext()) {
@@ -79,37 +66,31 @@ public class NotifyCenter {
         } else {
             clazz = DefaultPublisher.class;
         }
-
+        // 函数式接口 实现
         DEFAULT_PUBLISHER_FACTORY = (cls, buffer) -> {
             try {
                 EventPublisher publisher = clazz.newInstance();
                 publisher.init(cls, buffer);
                 return publisher;
             } catch (Throwable ex) {
-                LOGGER.error("Service class newInstance has error : ", ex);
-                throw new NacosRuntimeException(SERVER_ERROR, ex);
+                log.error("Service class newInstance has error : ", ex);
+                throw new VegetaRuntimeException(SERVER_ERROR, ex);
             }
         };
-
         try {
-
             // Create and init DefaultSharePublisher instance.
             INSTANCE.sharePublisher = new DefaultSharePublisher();
             INSTANCE.sharePublisher.init(SlowEvent.class, shareBufferSize);
-
         } catch (Throwable ex) {
-            LOGGER.error("Service class newInstance has error : ", ex);
+            log.error("Service class newInstance has error : ", ex);
         }
-
         ThreadUtils.addShutdownHook(NotifyCenter::shutdown);
     }
 
-    @JustForTest
     public static Map<String, EventPublisher> getPublisherMap() {
         return INSTANCE.publisherMap;
     }
 
-    @JustForTest
     public static EventPublisher getPublisher(Class<? extends Event> topic) {
         if (ClassUtils.isAssignableFrom(SlowEvent.class, topic)) {
             return INSTANCE.sharePublisher;
@@ -117,7 +98,6 @@ public class NotifyCenter {
         return INSTANCE.publisherMap.get(topic.getCanonicalName());
     }
 
-    @JustForTest
     public static EventPublisher getSharePublisher() {
         return INSTANCE.sharePublisher;
     }
@@ -129,29 +109,32 @@ public class NotifyCenter {
         if (!CLOSED.compareAndSet(false, true)) {
             return;
         }
-        LOGGER.warn("[NotifyCenter] Start destroying Publisher");
+        log.warn("[NotifyCenter] Start destroying Publisher");
 
         for (Map.Entry<String, EventPublisher> entry : INSTANCE.publisherMap.entrySet()) {
             try {
                 EventPublisher eventPublisher = entry.getValue();
                 eventPublisher.shutdown();
             } catch (Throwable e) {
-                LOGGER.error("[EventPublisher] shutdown has error : ", e);
+                log.error("[EventPublisher] shutdown has error : ", e);
             }
         }
 
         try {
             INSTANCE.sharePublisher.shutdown();
         } catch (Throwable e) {
-            LOGGER.error("[SharePublisher] shutdown has error : ", e);
+            log.error("[SharePublisher] shutdown has error : ", e);
         }
 
-        LOGGER.warn("[NotifyCenter] Destruction of the end");
+        log.warn("[NotifyCenter] Destruction of the end");
     }
 
     /**
      * Register a Subscriber. If the Publisher concerned by the Subscriber does not exist, then PublihserMap will
-     * preempt a placeholder Publisher with default EventPublisherFactory first.
+     * preempt a placeholder Publisher with default EventPublisherFactory first.、
+     * <p>
+     * 注册订阅者。如果 Subscriber 关注的 Publisher 不存在，则 PublihserMap 将
+     * 首先使用默认的 EventPublisherFactory 抢占占位符发布者。
      *
      * @param consumer subscriber
      */
@@ -170,6 +153,7 @@ public class NotifyCenter {
         // If you want to listen to multiple events, you do it separately,
         // based on subclass's subscribeTypes method return list, it can register to publisher.
         if (consumer instanceof SmartSubscriber) {
+            // 遍历所有的事件类型
             for (Class<? extends Event> subscribeType : ((SmartSubscriber) consumer).subscribeTypes()) {
                 // For case, producer: defaultSharePublisher -> consumer: smartSubscriber.
                 if (ClassUtils.isAssignableFrom(SlowEvent.class, subscribeType)) {
@@ -200,9 +184,12 @@ public class NotifyCenter {
      */
     private static void addSubscriber(final Subscriber consumer, Class<? extends Event> subscribeType, EventPublisherFactory factory) {
 
+        // 获取事件的真实类名  当做topic
         final String topic = ClassUtils.getCanonicalName(subscribeType);
         synchronized (NotifyCenter.class) {
             // MapUtils.computeIfAbsent is a unsafe method.
+            // 根据 具体的 Event实现  生成对应的 EventPublisher  存入map中   (INSTANCE.publisherMap)
+            // 利用 EventPublisherFactory 函数式接口
             MapUtil.computeIfAbsent(INSTANCE.publisherMap, topic, factory, subscribeType, ringBufferSize);
         }
         EventPublisher publisher = INSTANCE.publisherMap.get(topic);
@@ -215,6 +202,7 @@ public class NotifyCenter {
 
     /**
      * Deregister subscriber.
+     * 注销订阅者。
      *
      * @param consumer subscriber instance.
      */
@@ -274,13 +262,14 @@ public class NotifyCenter {
         try {
             return publishEvent(event.getClass(), event);
         } catch (Throwable ex) {
-            LOGGER.error("There was an exception to the message publishing : ", ex);
+            log.error("There was an exception to the message publishing : ", ex);
             return false;
         }
     }
 
     /**
      * Request publisher publish event Publishers load lazily, calling publisher.
+     * 发布事件
      *
      * @param eventType class Instances type of the event type.
      * @param event     event instance.
@@ -296,7 +285,7 @@ public class NotifyCenter {
         if (publisher != null) {
             return publisher.publish(event);
         }
-        LOGGER.warn("There are no [{}] publishers for this event, please register", topic);
+        log.warn("There are no [{}] publishers for this event, please register", topic);
         return false;
     }
 
@@ -312,6 +301,7 @@ public class NotifyCenter {
 
     /**
      * Register publisher with default factory.
+     * 向默认工厂注册发布者。
      *
      * @param eventType    class Instances type of the event type.
      * @param queueMaxSize the publisher's queue max size.
@@ -322,6 +312,7 @@ public class NotifyCenter {
 
     /**
      * Register publisher with specified factory.
+     * 向指定工厂注册发布者。
      *
      * @param eventType    class Instances type of the event type.
      * @param factory      publisher factory.
@@ -344,6 +335,7 @@ public class NotifyCenter {
 
     /**
      * Register publisher.
+     * 注册发布者
      *
      * @param eventType class Instances type of the event type.
      * @param publisher the specified event publisher
@@ -360,6 +352,7 @@ public class NotifyCenter {
 
     /**
      * Deregister publisher.
+     * 注销发布者。
      *
      * @param eventType class Instances type of the event type.
      */
@@ -369,8 +362,7 @@ public class NotifyCenter {
         try {
             publisher.shutdown();
         } catch (Throwable ex) {
-            LOGGER.error("There was an exception when publisher shutdown : ", ex);
+            log.error("There was an exception when publisher shutdown : ", ex);
         }
     }
-
 }

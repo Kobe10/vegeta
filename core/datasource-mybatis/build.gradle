@@ -1,3 +1,6 @@
+group 'com.vegeta'
+archivesBaseName = 'datasource-mybatis'
+
 dependencies {
     // 依赖日志组件
     api project(":common:log-util")

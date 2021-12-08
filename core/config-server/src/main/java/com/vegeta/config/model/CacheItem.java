@@ -1,8 +1,11 @@
 package com.vegeta.config.model;
 
+import com.vegeta.config.toolkit.Md5ConfigUtil;
 import com.vegeta.config.toolkit.SimpleReadWriteLock;
 import com.vegeta.config.toolkit.SingletonRepository;
+import com.vegeta.datasource.model.ConfigAllInfo;
 import com.vegeta.global.consts.Constants;
+import com.vegeta.global.util.MD5Utils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,26 +26,25 @@ public class CacheItem {
         this.groupKey = SingletonRepository.GroupIdCache.getSingleton(groupKey);
     }
 
+    public CacheItem(String groupKey, String md5) {
+        this.md5 = md5;
+        this.groupKey = SingletonRepository.GroupIdCache.getSingleton(groupKey);
+    }
+
+    public CacheItem(String groupKey, ConfigAllInfo configAllInfo) {
+        this.configAllInfo = configAllInfo;
+        this.md5 = Md5ConfigUtil.getTpContentMd5(configAllInfo);
+        this.groupKey = SingletonRepository.GroupIdCache.getSingleton(groupKey);
+    }
+
     final String groupKey;
 
     public volatile String md5 = Constants.NULL;
 
     public volatile long lastModifiedTs;
 
-    /**
-     * Use for beta.
-     */
-    public volatile boolean isBeta = false;
+    public volatile ConfigAllInfo configAllInfo;
 
-    public volatile String md54Beta = Constants.NULL;
-
-    public volatile List<String> ips4Beta;
-
-    public volatile long lastModifiedTs4Beta;
-
-    public volatile Map<String, String> tagMd5;
-
-    public volatile Map<String, Long> tagLastModifiedTs;
 
     public SimpleReadWriteLock rwLock = new SimpleReadWriteLock();
 
