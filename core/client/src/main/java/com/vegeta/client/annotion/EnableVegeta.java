@@ -10,11 +10,11 @@ import java.lang.annotation.*;
  * @Author fuzhiqiang
  * @Date 2021/12/4
  */
+// 导入VegetaMarkerConfiguration bean (因为client 的自动装配配置类依赖VegetaMarkerConfiguration 类)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-// 导入VegetaMarkerConfiguration bean (因为client 的自动装配配置类依赖VegetaMarkerConfiguration 类)
-@Import(VegetaMarkerConfiguration.class)
+@Import({BeforeCheckConfiguration.class, VegetaMarkerConfiguration.class})
 public @interface EnableVegeta {
 
 }

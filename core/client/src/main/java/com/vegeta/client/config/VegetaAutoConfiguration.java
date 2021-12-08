@@ -31,14 +31,14 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * @Author fuzhiqiang
  * @Date 2021/11/24
  */
-@Configuration
-@AllArgsConstructor
+// 自动配置 按照顺序 配置下列类
 // 只有当 VegetaMarkerConfiguration 注册之后  当前自动装配类才会生效
 // VegetaMarkerConfiguration 又是依赖 EnableVegeta 注解的导入
 // EnableVegeta 又是使用方的唯一入口；  这个自动 装配类就会扫描到所有的bean
+@Configuration
+@AllArgsConstructor
 @ConditionalOnBean(VegetaMarkerConfiguration.Marker.class)
 @EnableConfigurationProperties(BootstrapProperties.class)
-// 自动配置 按照顺序 配置下列类
 @ImportAutoConfiguration({
         HttpClientConfig.class,
         // 当前客户端基本信息
@@ -67,7 +67,7 @@ public class VegetaAutoConfiguration {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public ApplicationContextHolder hippo4JApplicationContextHolder() {
+    public ApplicationContextHolder vegetaApplicationContextHolder() {
         return new ApplicationContextHolder();
     }
 

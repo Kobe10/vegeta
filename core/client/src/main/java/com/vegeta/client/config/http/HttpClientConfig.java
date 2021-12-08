@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class HttpClientConfig {
     @Bean
-    public OkHttpClient hippo4JOkHttpClient() {
+    public OkHttpClient okHttpClient() {
         OkHttpClient.Builder build = new OkHttpClient.Builder();
         build.connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)

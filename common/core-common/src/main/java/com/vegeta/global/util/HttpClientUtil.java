@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class HttpClientUtil {
     @Resource
-    private OkHttpClient okHttoClient;
+    private OkHttpClient okHttpClient;
 
     private MediaType jsonMediaType = MediaType.parse("application/json; charset=utf-8");
 
@@ -153,7 +153,7 @@ public class HttpClientUtil {
                 .url(url)
                 .post(requestBody)
                 .build();
-        Response resp = okHttoClient.newCall(request).execute();
+        Response resp = okHttpClient.newCall(request).execute();
         if (resp.code() != HTTP_OK_CODE) {
             String msg = String.format("HttpPost 响应 code 异常. [code] %s [url] %s [body] %s", resp.code(), url, jsonBody);
             throw new RuntimeException(msg);
@@ -165,7 +165,7 @@ public class HttpClientUtil {
     @SneakyThrows
     private byte[] doGet(String url) {
         Request request = new Request.Builder().get().url(url).build();
-        Response resp = okHttoClient.newCall(request).execute();
+        Response resp = okHttpClient.newCall(request).execute();
         if (resp.code() != HTTP_OK_CODE) {
             String msg = String.format("HttpGet 响应 code 异常. [code] %s [url] %s", resp.code(), url);
             throw new RuntimeException(msg);
@@ -185,7 +185,7 @@ public class HttpClientUtil {
 
         Request request = builder.url(buildUrl).build();
 
-        Call call = okHttoClient.newCall(request);
+        Call call = okHttpClient.newCall(request);
 
         Response resp = call.execute();
         if (resp.code() != HTTP_OK_CODE) {
@@ -208,7 +208,7 @@ public class HttpClientUtil {
                 .post(RequestBody.create(jsonMediaType, ""))
                 .build();
 
-        Call call = okHttoClient.newCall(request);
+        Call call = okHttpClient.newCall(request);
 
         Response resp = call.execute();
         if (resp.code() != HTTP_OK_CODE) {

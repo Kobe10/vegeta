@@ -3,6 +3,7 @@ archivesBaseName = 'server-web'
 dependencies {
     api project(":core:config-server")
     api project(":core:discovery")
+    api project(":core:console-admin")
 
 
     implementation 'org.springframework.boot:spring-boot-starter-web'

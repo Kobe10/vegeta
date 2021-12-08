@@ -112,7 +112,7 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
 
         try {
             // path:  /v1/cs/configs  从服务端拉取配置，然后在本地创建对应线程池
-            result = httpAgent.httpGetByConfig(Constants.CONFIG_CONTROLLER_PATH, null, queryStrMap, 5000L);
+            result = httpAgent.httpGetByConfig(Constants.CONFIG_DETAIL_PATH, null, queryStrMap, 5000L);
             if (result.isSuccess() && result.getData() != null && (ppi = JSON.toJavaObject((JSON) result.getData(), PoolParameterInfo.class)) != null) {
                 // 创建阻塞队列  (通过spi实现)
                 BlockingQueue workQueue = QueueTypeEnum.createBlockingQueue(ppi.getQueueType(), ppi.getCapacity());

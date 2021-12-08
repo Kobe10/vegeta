@@ -50,6 +50,13 @@ public class ApplicationController {
         return Results.success();
     }
 
+    /**
+     * @param instanceRenew {@link com.vegeta.global.model.InstanceInfo.InstanceRenew}
+     * @description: 更新实例信息  ----  > 租期续约
+     * @author: fuzhiqiang
+     * @date: 2021/12/8
+     * @return: com.vegeta.global.http.result.base.Result
+     */
     @PostMapping("/renew")
     public Result renew(@RequestBody InstanceInfo.InstanceRenew instanceRenew) {
         boolean isSuccess = instanceRegistry.renew(instanceRenew);

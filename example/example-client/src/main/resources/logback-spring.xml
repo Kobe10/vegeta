@@ -76,14 +76,14 @@
     </appender>
 
     <springProfile name="default,dev,local,test,pre">
-        <root level="debug">
+        <root level="info">
             <appender-ref ref="console" />
         </root>
     </springProfile>
 
     <springProfile name="test">
         <logger name="MybatisSql2Logback" level="DEBUG"/>
-        <logger name="xiaoban" level="debug"/>
+        <logger name="vegeta" level="debug"/>
         <root level="info">
             <appender-ref ref="ASYNC-INFO" />
             <appender-ref ref="ASYNC-ERROR" />

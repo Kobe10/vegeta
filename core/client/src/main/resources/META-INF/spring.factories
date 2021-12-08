@@ -1,3 +1,1 @@
-# register  Automatic assembly class
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.vegeta.client.config.VegetaAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.vegeta.client.config.VegetaAutoConfiguration

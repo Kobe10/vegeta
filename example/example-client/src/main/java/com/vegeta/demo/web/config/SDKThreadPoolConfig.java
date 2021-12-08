@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 线程池配置示例
+ * todo   现阶段代码入侵性太强   可以通过注解来绑定线程池
  *
  * @Author fuzhiqiang
  * @Date 2021/12/4
@@ -50,5 +51,4 @@ public class SDKThreadPoolConfig {
                 .build();
     }
 
-    // todo   现阶段代码入侵性太强   可以通过注解来绑定线程池
 }

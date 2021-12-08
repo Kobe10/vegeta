@@ -133,13 +133,13 @@ public class BaseInstanceRegistry implements InstanceRegistry<InstanceInfo> {
     public boolean renew(InstanceInfo.InstanceRenew instanceRenew) {
         String appName = instanceRenew.getAppName();
         String instanceId = instanceRenew.getInstanceId();
-
+        // 从内存中或者实例的租约信息
         Map<String, Lease<InstanceInfo>> registryMap = registry.get(appName);
         Lease<InstanceInfo> leaseToRenew = null;
         if (registryMap == null || (leaseToRenew = registryMap.get(instanceId)) == null) {
             return false;
         }
-
+        // 更新实例租约信息
         leaseToRenew.renew();
         return true;
     }

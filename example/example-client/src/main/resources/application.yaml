@@ -4,16 +4,11 @@ server:
     context-path: /example
 
 spring:
-  profiles:
-    active: dev
-
-  # 应用配置
   application:
-    name: vegeta-example
-  # 动态线程池配置
-  dynamic:
+    name: vegeta
+  vegeta:
     thread-pool:
-      server-addr: http://localhost:6691
+      server-addr: http://localhost:8080
       namespace: prescription
       app-id: ${spring.application.name}
 

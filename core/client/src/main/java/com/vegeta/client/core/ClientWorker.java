@@ -25,8 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.vegeta.global.consts.Constants.CONFIG_CONTROLLER_PATH;
-import static com.vegeta.global.consts.Constants.LISTENER_PATH;
+import static com.vegeta.global.consts.Constants.*;
 
 /**
  * 客户端  Long polling.
@@ -266,7 +265,7 @@ public class ClientWorker implements Closeable {
         params.put("appId", appId);
         params.put("tpId", tpId);
 
-        Result result = agent.httpGetByConfig(CONFIG_CONTROLLER_PATH, null, params, readTimeout);
+        Result result = agent.httpGetByConfig(CONFIG_DETAIL_PATH, null, params, readTimeout);
         if (result.isSuccess()) {
             return result.getData().toString();
         }

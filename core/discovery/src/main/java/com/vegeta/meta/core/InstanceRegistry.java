@@ -32,10 +32,11 @@ public interface InstanceRegistry<T> {
     void register(T info);
 
     /**
-     * Renew.
-     *
      * @param instanceRenew
-     * @return
+     * @description: renew 更新
+     * @author: fuzhiqiang
+     * @date: 2021/12/8
+     * @return: boolean
      */
     boolean renew(InstanceInfo.InstanceRenew instanceRenew);
 

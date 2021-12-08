@@ -17,7 +17,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = BootstrapProperties.PREFIX)
 public class BootstrapProperties {
 
-    public static final String PREFIX = "spring.dynamic.thread-pool";
+    public static final String PREFIX = "spring.vegeta.thread-pool";
 
     /**
      * serverAddr
