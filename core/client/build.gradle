@@ -1,5 +1,7 @@
 group 'com.vegeta'
 archivesBaseName = 'client'
+version = '0.0.1'
+
 dependencies {
     api project(":common:core-common")
     api project(":core:api")

@@ -100,7 +100,7 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
      */
     private ThreadPoolExecutor assemblePoolInfoAndRegister(DynamicThreadPoolWrapper dynamicThreadPoolWrap) {
         String tpId = dynamicThreadPoolWrap.getTpId();
-        Map<String, String> queryStrMap = new HashMap(3);
+        Map<String, String> queryStrMap = new HashMap<>(3);
         queryStrMap.put(Constants.TP_ID, tpId);
         queryStrMap.put(Constants.APP_ID, properties.getAppId());
         queryStrMap.put(Constants.NAMESPACE, properties.getNamespace());
@@ -123,7 +123,7 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
                         .poolThreadSize(ppi.getCoreSize(), ppi.getMaxSize())
                         .keepAliveTime(ppi.getKeepAliveTime(), TimeUnit.SECONDS)
                         .rejected(RejectedTypeEnum.createPolicy(ppi.getRejectedType()))
-                        .alarmConfig(ppi.getIsAlarm(), ppi.getCapacityAlarm(), ppi.getLivenessAlarm())
+//                        .alarmConfig(ppi.getIsAlarm(), ppi.getCapacityAlarm(), ppi.getLivenessAlarm())
                         .build();
 
                 dynamicThreadPoolWrap.setExecutor(poolExecutor);

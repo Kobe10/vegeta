@@ -93,13 +93,13 @@ public class ClientWorker implements Closeable {
     }
 
     public void checkConfigInfo() {
-//        log.info("【check config info start! 】");
         int listenerSize = cacheMap.get().size();
         double perTaskConfigSize = 3000D;
         // 监听组的任务数量
         int longingTaskCount = (int) Math.ceil(listenerSize / perTaskConfigSize);
         // 当组的数量大于当前内存的任务数量  轮询补全长轮询任务数量
         if (longingTaskCount > currentLongingTaskCount) {
+            log.info("【注册 listener 任务触发，当前轮询任务数量: {}, 实时任务数量: {}】", currentLongingTaskCount, longingTaskCount);
             for (int i = (int) currentLongingTaskCount; i < longingTaskCount; i++) {
                 executorService.execute(new LongPollingRunnable());
             }

@@ -45,6 +45,15 @@ public class ConfigController {
         return Results.success(configAllInfo);
     }
 
+    /**
+     * 发布配置信息
+     *
+     * @param identify 身份认证
+     * @param config   配置信息 {@link ConfigAllInfo}
+     * @return com.vegeta.global.http.result.base.Result<java.lang.Boolean>
+     * @Author fuzhiqiang
+     * @Date 2021/12/9
+     */
     @PostMapping(value = "/publishConfig")
     public Result<Boolean> publishConfig(@RequestParam(value = "identify", required = false) String identify, @RequestBody ConfigAllInfo config) {
         configService.insertOrUpdate(identify, config);

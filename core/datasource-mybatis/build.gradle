@@ -7,15 +7,10 @@ dependencies {
     api project(":common:core-common")
 
     api 'tk.mybatis:mapper-spring-boot-starter:2.1.5'
-    api 'com.baomidou:mybatis-plus-boot-starter:3.4.1'
+    api 'com.baomidou:mybatis-plus-boot-starter:3.4.2'
     api group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
     api group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.18.Final'
-    api group: 'com.alibaba', name: 'druid', version: '1.1.22'
 
     // pagehelper 分页插件
-    implementation 'com.github.pagehelper:pagehelper:5.1.10'
-    implementation 'com.github.pagehelper:pagehelper-spring-boot-autoconfigure:1.2.5'
-    implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.5'
     implementation 'org.apache.commons:commons-lang3:3.8.1'
-    implementation 'com.arronlong:httpclientutil:1.0.4'
 }

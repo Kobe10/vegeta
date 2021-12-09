@@ -1,15 +1,15 @@
 server:
-  port: 8090
+  port: 8070
   servlet:
     context-path: /example
 
 spring:
   application:
-    name: vegeta
+    name: vegeta-example
   vegeta:
     thread-pool:
-      server-addr: http://localhost:8080
-      namespace: prescription
+      server-addr: http://localhost:8090
+      namespace: ceo
       app-id: ${spring.application.name}
 
 logging:

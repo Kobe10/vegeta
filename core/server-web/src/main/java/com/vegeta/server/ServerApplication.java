@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * <p></p>
- * <p> xx
+ * <p> 服务端统一web
  * <PRE>
  * <BR>    修改记录
  * <BR>-----------------------------------------------
@@ -18,7 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2021年11月05日 14:37
  * @since 1.0
  */
-@MapperScan(basePackages = {"com.vegeta.datasource.auth.mapper", "com.vegeta.datasource.server.mapper"})
+@MapperScan(basePackages = {"com.vegeta.datasource.auth.mapper", "com.vegeta.datasource.server.mapper", "com.vegeta.datasource.mapper"})
 @SpringBootApplication(scanBasePackages = {"com.vegeta"})
 public class ServerApplication {
     public static void main(String[] args) {

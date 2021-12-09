@@ -1,7 +1,0 @@
-#*************** Spring Boot Related Configurations ***************#
-### Server Startup Port
-server:
-  port: 6691
-
-tenant:
-  vegeta

@@ -17,14 +17,14 @@ import org.springframework.boot.ansi.AnsiStyle;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class DynamicThreadPoolBannerHandler implements InitializingBean {
+public class VegetaBannerHandler implements InitializingBean {
 
     @NonNull
     private final BootstrapProperties properties;
 
-    private final String DYNAMIC_THREAD_POOL = " :: Dynamic ThreadPool :: ";
+    private final String DYNAMIC_THREAD_POOL = " :: Vegeta ThreadPool :: ";
 
-    private final String VEGETA_GITHUB = "";
+    private final String VEGETA_GITHUB = "git@github.com:Kobe10/vegeta.git";
 
     private final String VEGETA_SITE = "";
 
@@ -58,7 +58,8 @@ public class DynamicThreadPoolBannerHandler implements InitializingBean {
     }
 
     public static String getVersion() {
-        final Package pkg = DynamicThreadPoolBannerHandler.class.getPackage();
-        return pkg != null ? pkg.getImplementationVersion() : "";
+        final Package pkg = VegetaBannerHandler.class.getPackage();
+        return "0.0.1";
+//        return pkg != null ? pkg.getImplementationVersion() : "1.0.0";
     }
 }

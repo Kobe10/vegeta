@@ -18,7 +18,7 @@ public @interface LogRecord {
     /**
      * 业务前缀
      */
-    String prefix();
+    String prefix() default "";
 
     /**
      * 操作日志文本模版

@@ -46,5 +46,4 @@ public class LogRecordInfo {
     private Date createTime;
 
     private String detail;
-
 }

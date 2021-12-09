@@ -3,7 +3,9 @@ package com.vegeta.config.toolkit;
 import com.google.common.collect.Lists;
 import com.vegeta.config.service.ConfigCacheService;
 import com.vegeta.datasource.model.ConfigAllInfo;
+import com.vegeta.global.util.ContentUtil;
 import com.vegeta.global.util.GroupKeyUtil;
+import com.vegeta.global.util.MD5Utils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +39,8 @@ public class Md5ConfigUtil {
      * @param config 配置信息
      */
     public static String getTpContentMd5(ConfigAllInfo config) {
-        return Md5ConfigUtil.getTpContentMd5(config);
+        return MD5Utils.md5Hex(ContentUtil.getPoolContent(config), "UTF-8");
+//        return Md5ConfigUtil.getTpContentMd5(config);
     }
 
     /**

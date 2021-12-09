@@ -11,7 +11,7 @@ import com.vegeta.client.core.ConfigService;
 import com.vegeta.client.core.DynamicThreadPoolPostProcessor;
 import com.vegeta.client.core.ThreadPoolConfigService;
 import com.vegeta.client.core.ThreadPoolOperation;
-import com.vegeta.client.handler.DynamicThreadPoolBannerHandler;
+import com.vegeta.client.handler.VegetaBannerHandler;
 import com.vegeta.client.oapi.HttpAgent;
 import com.vegeta.client.tool.inet.InetUtils;
 import com.vegeta.global.config.ApplicationContextHolder;
@@ -61,8 +61,8 @@ public class VegetaAutoConfiguration {
      * @Date 2021/11/24
      */
     @Bean
-    public DynamicThreadPoolBannerHandler threadPoolBannerHandler() {
-        return new DynamicThreadPoolBannerHandler(properties);
+    public VegetaBannerHandler threadPoolBannerHandler() {
+        return new VegetaBannerHandler(properties);
     }
 
     @Bean

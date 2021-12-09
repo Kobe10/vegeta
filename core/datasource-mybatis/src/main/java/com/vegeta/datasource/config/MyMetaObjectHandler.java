@@ -22,15 +22,14 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     // 处理insert  update的字段
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.strictInsertFill(metaObject, "gmtCreate", Date.class, new Date());
-        this.strictInsertFill(metaObject, "gmtModified", Date.class, new Date());
+        this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
+        this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
 
-        this.strictInsertFill(metaObject, "delFlag", Integer.class, DelEnum.NORMAL.getIntCode());
+        this.strictInsertFill(metaObject, "deleted", Integer.class, DelEnum.NORMAL.getIntCode());
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictInsertFill(metaObject, "gmtModified", Date.class, new Date());
+        this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
     }
-
 }

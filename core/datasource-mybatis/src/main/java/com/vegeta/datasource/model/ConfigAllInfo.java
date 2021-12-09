@@ -8,30 +8,31 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.vegeta.global.model.PoolParameter;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
 /**
  * Config all info.
  *
- * @author chen.ma
- * @date 2021/6/20 15:14
+ * @Author fuzhiqiang
+ * @Date 2021/12/9
  */
 @Data
-@TableName("thread_config")
+@TableName(value = "thread_config")
+@EqualsAndHashCode(callSuper = false)
 public class ConfigAllInfo extends ThreadConfigInfo implements PoolParameter {
+    private static final long serialVersionUID = -8652339270450521966L;
     /**
      * 创建人
      */
     @JSONField(serialize = false)
-    @TableField(fill = FieldFill.INSERT)
     private String creator;
 
     /**
      * 更新人
      */
     @JSONField(serialize = false)
-    @TableField(exist = false, fill = FieldFill.INSERT_UPDATE)
     private String updater;
 
     /**

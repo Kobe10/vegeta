@@ -2,6 +2,7 @@ package com.vegeta.client.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Config empty exception.
@@ -11,7 +12,10 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class ConfigEmptyException extends RuntimeException {
+
+    private static final long serialVersionUID = -6296648414633678725L;
 
     private String description;
 
