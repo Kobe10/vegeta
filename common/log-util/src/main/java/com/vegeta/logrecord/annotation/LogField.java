@@ -3,8 +3,8 @@ package com.vegeta.logrecord.annotation;
 /**
  * 日志字段, 用于标记需要比较的实体属性.
  *
- * @author chen.ma
- * @date 2021/10/23 21:29
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public @interface LogField {
 

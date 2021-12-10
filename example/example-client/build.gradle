@@ -1,0 +1,13 @@
+group 'com.vegeta'
+archivesBaseName = 'example-client'
+
+dependencies {
+    api(
+            project(":core:client"),
+            project(":common:log-util")
+    )
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}

@@ -1,0 +1,22 @@
+POST http://localhost:8090/v1/cs/configs/publishConfig
+Content-Type: application/json
+Accept: application/json
+
+{
+  "ignore": "tenantId、appId、threadPoolId 代表唯一线程池，请不要修改",
+  "tenantId": "ceo",
+  "appId": "vegeta-example",
+  "threadPoolId": "task-consume",
+  "threadPoolName": "task-consume",
+  "coreSize": 9,
+  "maxSize": 16,
+  "queueType": 9,
+  "capacity": 100,
+  "keepAliveTime": 12,
+  "rejectedType": 7,
+  "isAlarm": 0,
+  "capacityAlarm": 81,
+  "livenessAlarm": 82
+}
+
+

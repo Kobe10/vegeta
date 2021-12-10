@@ -6,8 +6,8 @@ import lombok.Data;
 /**
  * 日志操作记录.
  *
- * @author chen.ma
- * @date 2021/10/24 21:07
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @Data
 @Builder
@@ -28,5 +28,4 @@ public class LogRecordOps {
     private String detail;
 
     private String condition;
-
 }

@@ -1,14 +1,14 @@
 package com.vegeta.logrecord.service.impl;
 
-import com.github.dynamic.threadpool.logrecord.model.LogRecordInfo;
-import com.github.dynamic.threadpool.logrecord.service.LogRecordService;
+import com.vegeta.logrecord.model.LogRecordInfo;
+import com.vegeta.logrecord.service.LogRecordService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * 默认实现日志存储.
  *
- * @author chen.ma
- * @date 2021/10/24 17:59
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @Slf4j
 public class DefaultLogRecordServiceImpl implements LogRecordService {
@@ -17,5 +17,4 @@ public class DefaultLogRecordServiceImpl implements LogRecordService {
     public void record(LogRecordInfo logRecordInfo) {
         log.info("Log print :: {}", logRecordInfo);
     }
-
 }

@@ -1,0 +1,11 @@
+group 'com.vegeta'
+archivesBaseName = 'config-server'
+
+dependencies {
+    api project(":common:core-common")
+    api project(":common:log-util")
+    api project(":core:datasource-mybatis")
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

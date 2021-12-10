@@ -1,14 +1,14 @@
 package com.vegeta.logrecord.service.impl;
 
-import com.github.dynamic.threadpool.logrecord.service.FunctionService;
-import com.github.dynamic.threadpool.logrecord.service.ParseFunction;
+import com.vegeta.logrecord.service.FunctionService;
+import com.vegeta.logrecord.service.ParseFunction;
 import lombok.AllArgsConstructor;
 
 /**
  * 默认实现函数接口.
  *
- * @author chen.ma
- * @date 2021/10/24 21:54
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 @AllArgsConstructor
 public class DefaultFunctionServiceImpl implements FunctionService {

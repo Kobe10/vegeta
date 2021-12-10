@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- 文件输出格式 -->
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{userId}] %logger{100}:%line %msg%n"/>
+    <!-- 文件路径 -->
+    <property name="LOG_FILE_PATH" value="logs" />
+    <!-- 文件名 -->
+    <property name="INFO_LOG_FILE_BASE_NAME" value="info.log" />
+    <property name="ERROR_LOG_FILE_BASE_NAME" value="error.log" />
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--info级别-->
+    <appender name="dailyRollingInfoFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--过滤error级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <File>${LOG_FILE_PATH}/${INFO_LOG_FILE_BASE_NAME}</File>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${LOG_FILE_PATH}/${INFO_LOG_FILE_BASE_NAME}.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <MaxHistory>8</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <!--error级别-->
+    <appender name="dailyRollingErrorFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--只记录ERROR及以上级别-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <File>${LOG_FILE_PATH}/${ERROR_LOG_FILE_BASE_NAME}</File>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${LOG_FILE_PATH}/${ERROR_LOG_FILE_BASE_NAME}.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <MaxHistory>8</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <!--异步输出,异步的log片段必须在同步段后面-->
+    <appender name="ASYNC-INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>256</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="dailyRollingInfoFileAppender"/>
+        <includeCallerData>true</includeCallerData> <!--行号-->
+    </appender>
+
+    <appender name="ASYNC-ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="dailyRollingErrorFileAppender"/>
+    </appender>
+
+    <springProfile name="default,dev,local,test,pre">
+        <root level="info">
+            <appender-ref ref="console" />
+        </root>
+    </springProfile>
+
+    <springProfile name="test">
+        <logger name="MybatisSql2Logback" level="DEBUG"/>
+        <logger name="vegeta" level="debug"/>
+        <root level="info">
+            <appender-ref ref="ASYNC-INFO" />
+            <appender-ref ref="ASYNC-ERROR" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="MybatisSql2Logback" level="info"/>
+        <root level="info">
+            <appender-ref ref="ASYNC-INFO" />
+            <appender-ref ref="ASYNC-ERROR" />
+        </root>
+    </springProfile>
+
+    <springProfile name="pre">
+        <root level="info">
+            <appender-ref ref="ASYNC-INFO" />
+            <appender-ref ref="ASYNC-ERROR" />
+        </root>
+    </springProfile>
+
+</configuration>

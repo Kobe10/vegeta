@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * 对象比对器.
  *
- * @author chen.ma
- * @date 2021/10/24 20:27
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public interface Equator {
 
@@ -27,5 +27,4 @@ public interface Equator {
      * @return
      */
     List<FieldInfo> getDiffFields(Object first, Object second);
-
 }

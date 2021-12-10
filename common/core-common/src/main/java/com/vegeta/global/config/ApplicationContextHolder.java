@@ -10,8 +10,8 @@ import java.util.Map;
 /**
  * Application context holder.    应用上下文管理器
  *
- * @author chen.ma
- * @date 2021/6/20 18:49
+ * @Author fuzhiqiang
+ * @Date 2021/12/4
  */
 public class ApplicationContextHolder implements ApplicationContextAware {
 

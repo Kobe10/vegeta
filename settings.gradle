@@ -1,0 +1,23 @@
+rootProject.name = 'vegeta'
+
+// 通用工具
+include 'common'
+include('common:log-util')
+include('common:core-common')
+include('common:github-change-util')
+
+// 核心组件
+include('core:api')
+include('core:datasource-mybatis')
+include('core:server-web')
+include('core:discovery')
+include('core:config-server')
+include('core:console-admin')
+include('core:console-ui')
+include('core:auth')
+include('core:client')
+include('core')
+
+// web demo 项目
+include('example')
+include('example:example-client')

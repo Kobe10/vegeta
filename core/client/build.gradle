@@ -1,0 +1,16 @@
+group 'com.vegeta'
+archivesBaseName = 'client'
+version = '0.0.1'
+
+dependencies {
+    api project(":common:core-common")
+    api project(":core:api")
+
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.slf4j:slf4j-api")
+    implementation("cn.hutool:hutool-all:5.7.15")
+    implementation("commons-codec:commons-codec")
+    implementation("net.jcip:jcip-annotations:1.0")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+}

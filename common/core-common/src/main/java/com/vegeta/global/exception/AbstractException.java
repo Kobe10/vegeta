@@ -1,7 +1,5 @@
 package com.vegeta.global.exception;
 
-import com.vegeta.global.result.FailResponse;
-
 /**
  * <p></p>
  * <p> 异常抽象类
@@ -30,11 +28,11 @@ public abstract class AbstractException extends RuntimeException {
     /**
      * 错误返回结果
      */
-    protected FailResponse failResponse;
-
-    public FailResponse getFailResponse() {
-        return failResponse;
-    }
+//    protected FailResponse failResponse;
+//
+//    public FailResponse getFailResponse() {
+//        return failResponse;
+//    }
 
     @Override
     public String getMessage() {

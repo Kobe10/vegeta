@@ -1,13 +1,13 @@
 package com.vegeta.logrecord.service.impl;
 
-import com.github.dynamic.threadpool.logrecord.model.Operator;
-import com.github.dynamic.threadpool.logrecord.service.OperatorGetService;
+import com.vegeta.logrecord.model.Operator;
+import com.vegeta.logrecord.service.OperatorGetService;
 
 /**
  * 默认实现.
  *
- * @author chen.ma
- * @date 2021/10/24 17:58
+ * @Author fuzhiqiang
+ * @Date 2021/12/3
  */
 public class DefaultOperatorGetServiceImpl implements OperatorGetService {
 
@@ -15,5 +15,4 @@ public class DefaultOperatorGetServiceImpl implements OperatorGetService {
     public Operator getUser() {
         return new Operator("994924");
     }
-
 }

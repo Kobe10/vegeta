@@ -1,0 +1,15 @@
+group 'com.vegeta'
+archivesBaseName = 'console-admin'
+
+dependencies {
+    api project(":common:core-common")
+    api project(":common:log-util")
+    api project(":core:datasource-mybatis")
+    api project(":core:discovery")
+    api project(":core:auth")
+    api project(":core:config-server")
+
+    implementation 'com.alibaba:fastjson:1.2.72'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
