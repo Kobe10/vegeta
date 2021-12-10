@@ -88,4 +88,5 @@ public class Constants {
     //    ------------------------------------------------------------------------------------
     public static final String THREAD_REGISTER_CLIENT_HEARTBEAT_EXECUTOR = "DiscoveryClient-HeartbeatExecutor";
     public static final String THREAD_REGISTER_CLIENT_SCHEDULER = "RegistryClient-Scheduler";
+    public static final String IDENTIFY_SLICER_SYMBOL = "_";
 }

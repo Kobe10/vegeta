@@ -1,4 +1,4 @@
-package com.vegeta.datasource.mapper;
+package com.vegeta.datasource.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.vegeta.logrecord.model.LogRecordInfo;

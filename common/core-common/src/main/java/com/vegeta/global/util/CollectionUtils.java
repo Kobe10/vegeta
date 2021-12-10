@@ -16,6 +16,8 @@
 
 package com.vegeta.global.util;
 
+import com.vegeta.global.model.InstanceInfo;
+
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -25,7 +27,7 @@ import java.util.*;
  * @author <a href="mailto:liaochuntao@live.com">liaochuntao</a>
  */
 public final class CollectionUtils {
-    
+
     /**
      * Returns the <code>index</code>-th value in <code>object</code>, throwing
      * <code>IndexOutOfBoundsException</code> if there is no such element or
@@ -103,7 +105,7 @@ public final class CollectionUtils {
             }
         }
     }
-    
+
     /**
      * Gets the size of the collection/iterator specified.
      *
@@ -152,7 +154,7 @@ public final class CollectionUtils {
         }
         return total;
     }
-    
+
     /**
      * Judge whether object is empty.
      *
@@ -181,7 +183,7 @@ public final class CollectionUtils {
             }
         }
     }
-    
+
     /**
      * Whether contain item in collection.
      *
@@ -196,7 +198,7 @@ public final class CollectionUtils {
         }
         return coll.contains(target);
     }
-    
+
     /**
      * Null-safe check if the specified collection is empty.
      *
@@ -209,7 +211,7 @@ public final class CollectionUtils {
     public static boolean isEmpty(Collection coll) {
         return (coll == null || coll.isEmpty());
     }
-    
+
     /**
      * Null-safe check if the specified collection is not empty.
      *
@@ -222,7 +224,7 @@ public final class CollectionUtils {
     public static boolean isNotEmpty(Collection coll) {
         return !CollectionUtils.isEmpty(coll);
     }
-    
+
     /**
      * Returns the value to which the specified index , or {@code defaultValue} if this collection contains no value for
      * the index.
@@ -240,5 +242,18 @@ public final class CollectionUtils {
         } catch (IndexOutOfBoundsException e) {
             return defaultValue;
         }
+    }
+
+    public static boolean isEmpty(Map<?, ?> map) {
+        return MapUtil.isEmpty(map);
+    }
+
+
+    public static <T> T getFirst(Iterable<T> iterable) {
+        return null == iterable ? null : getFirst(iterable.iterator());
+    }
+
+    public static <T> T getFirst(Iterator<T> iterator) {
+        return null != iterator && iterator.hasNext() ? iterator.next() : null;
     }
 }

@@ -30,8 +30,7 @@ import java.util.function.Predicate;
  * Map utils.
  *
  * @author <a href="mailto:liaochuntao@live.com">liaochuntao</a>
- */
-public class MapUtil {
+ */ public class MapUtil {
 
     /**
      * Null-safe check if the specified Dictionary is empty.
@@ -141,8 +140,7 @@ public class MapUtil {
      * @return
      */
     @NotThreadSafe
-    public static <K, C, V, T> V computeIfAbsent(Map<K, V> target, K key, BiFunction<C, T, V> mappingFunction, C param1,
-                                                 T param2) {
+    public static <K, C, V, T> V computeIfAbsent(Map<K, V> target, K key, BiFunction<C, T, V> mappingFunction, C param1, T param2) {
 
         Objects.requireNonNull(target, "target");
         Objects.requireNonNull(key, "key");
@@ -177,13 +175,12 @@ public class MapUtil {
     /**
      * 根据 Key 进行模糊匹配.
      *
-     * @param sourceMap
-     * @param filters
-     * @return
+     * @param sourceMap 源数据
+     * @param filters   过滤key
      */
     public static List<String> parseMapForFilter(Map<String, ?> sourceMap, String filters) {
         List<String> resultList = Lists.newArrayList();
-        if (org.springframework.util.CollectionUtils.isEmpty(sourceMap)) {
+        if (CollectionUtils.isEmpty(sourceMap)) {
             return resultList;
         }
 

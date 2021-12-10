@@ -15,12 +15,7 @@ import java.util.List;
 
 import static com.vegeta.global.consts.Constants.BASE_PATH;
 
-/**
- * Application controller.
- *
- * @author chen.ma
- * @date 2021/8/8 22:24
- */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +25,16 @@ public class ApplicationController {
     @NonNull
     private final InstanceRegistry instanceRegistry;
 
+    /**
+     * 查询应用下所有的有租约的实例信息
+     *
+     * @param appName 应用名称
+     * @return com.vegeta.global.http.result.base.Result
+     * @Author fuzhiqiang
+     * @Date 2021/12/10
+     */
     @GetMapping("/{appName}")
-    public Result applications(@PathVariable String appName) {
+    public Result applications(@PathVariable(value = "appName") String appName) {
         List<Lease<InstanceInfo>> resultInstanceList = instanceRegistry.listInstance(appName);
         return Results.success(resultInstanceList);
     }
@@ -67,6 +70,14 @@ public class ApplicationController {
         return Results.success();
     }
 
+    /**
+     * 移除 租期实例信息
+     *
+     * @param instanceInfo {@link InstanceInfo}
+     * @return com.vegeta.global.http.result.base.Result
+     * @Author fuzhiqiang
+     * @Date 2021/12/10
+     */
     @PostMapping("/remove")
     public Result remove(@RequestBody InstanceInfo instanceInfo) {
         instanceRegistry.remove(instanceInfo);

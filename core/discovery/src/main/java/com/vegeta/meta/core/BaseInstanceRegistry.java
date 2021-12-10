@@ -64,13 +64,14 @@ public class BaseInstanceRegistry implements InstanceRegistry<InstanceInfo> {
 
     @Override
     public List<Lease<InstanceInfo>> listInstance(String appName) {
+        // 从内存缓存中获取具体的租约实例信息
         Map<String, Lease<InstanceInfo>> appNameLeaseMap = registry.get(appName);
         if (CollectionUtils.isEmpty(appNameLeaseMap)) {
             return Lists.newArrayList();
         }
 
         List<Lease<InstanceInfo>> appNameLeaseList = Lists.newArrayList();
-        appNameLeaseMap.values().forEach(each -> appNameLeaseList.add(each));
+        appNameLeaseList.addAll(appNameLeaseMap.values());
         return appNameLeaseList;
     }
 
@@ -139,7 +140,7 @@ public class BaseInstanceRegistry implements InstanceRegistry<InstanceInfo> {
         if (registryMap == null || (leaseToRenew = registryMap.get(instanceId)) == null) {
             return false;
         }
-        // 更新实例租约信息
+        // 租期续约 增加续约时长 (默认90s)
         leaseToRenew.renew();
         return true;
     }

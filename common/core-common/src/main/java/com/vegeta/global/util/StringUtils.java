@@ -367,7 +367,52 @@ public class StringUtils {
             return CharSequenceUtils.regionMatches(str1, true, 0, str2, 0, str1.length());
         }
     }
-    
+
+    /**
+     * 截取分隔字符串之前的字符串，不包括分隔字符串<br>
+     * 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串<br>
+     * 如果分隔字符串为空串""，则返回空串，如果分隔字符串未找到，返回原字符串，举例如下：
+     *
+     * <pre>
+     * StrUtil.subBefore(null, *, false)      = null
+     * StrUtil.subBefore("", *, false)        = ""
+     * StrUtil.subBefore("abc", "a", false)   = ""
+     * StrUtil.subBefore("abcba", "b", false) = "a"
+     * StrUtil.subBefore("abc", "c", false)   = "ab"
+     * StrUtil.subBefore("abc", "d", false)   = "abc"
+     * StrUtil.subBefore("abc", "", false)    = ""
+     * StrUtil.subBefore("abc", null, false)  = "abc"
+     * </pre>
+     *
+     * @param string          被查找的字符串
+     * @param separator       分隔字符串（不包括）
+     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
+     * @return 切割后的字符串
+     * @since 3.1.1
+     */
+    public static String subBefore(CharSequence string, CharSequence separator, boolean isLastSeparator) {
+        if (!isEmpty(string) && separator != null) {
+            String str = string.toString();
+            String sep = separator.toString();
+            if (sep.isEmpty()) {
+                return "";
+            } else {
+                int pos = isLastSeparator ? str.lastIndexOf(sep) : str.indexOf(sep);
+                if (-1 == pos) {
+                    return str;
+                } else {
+                    return 0 == pos ? "" : str.substring(0, pos);
+                }
+            }
+        } else {
+            return null == string ? null : string.toString();
+        }
+    }
+
+    public static boolean isEmpty(CharSequence str) {
+        return str == null || str.length() == 0;
+    }
+
     static class CharSequenceUtils {
         
         /**

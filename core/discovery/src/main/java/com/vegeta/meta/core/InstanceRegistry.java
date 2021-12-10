@@ -15,7 +15,7 @@ public interface InstanceRegistry<T> {
     /**
      * 实例列表
      *
-     * @param appName
+     * @param appName 应用名称
      * @return java.util.List<com.vegeta.meta.core.Lease < T>>
      * @Author fuzhiqiang
      * @Date 2021/12/8
@@ -32,8 +32,8 @@ public interface InstanceRegistry<T> {
     void register(T info);
 
     /**
-     * @param instanceRenew
-     * @description: renew 更新
+     * @param instanceRenew {@link InstanceInfo.InstanceRenew}
+     * @description: 租期续约
      * @author: fuzhiqiang
      * @date: 2021/12/8
      * @return: boolean
@@ -42,8 +42,6 @@ public interface InstanceRegistry<T> {
 
     /**
      * Remove.
-     *
-     * @param info
      */
     void remove(T info);
 }

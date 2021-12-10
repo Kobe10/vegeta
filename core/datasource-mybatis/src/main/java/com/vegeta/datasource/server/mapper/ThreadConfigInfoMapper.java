@@ -2,7 +2,10 @@ package com.vegeta.datasource.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.vegeta.datasource.model.ConfigAllInfo;
+import com.vegeta.datasource.model.ThreadConfig;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * Config info mapper.
@@ -12,4 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ThreadConfigInfoMapper extends BaseMapper<ConfigAllInfo> {
+    List<ThreadConfig> getThreadPoolByAppId(String appId);
 }
